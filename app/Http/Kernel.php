@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'auth.sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
         'ability' => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
+        'permission' => \App\Http\Middleware\PermissionMiddleware::class,
     ];
 }

@@ -13,15 +13,15 @@
             Overview
         </a>
 
-        <div class="nav-dropdown {{ request()->routeIs('view-users') ? 'open' : '' }}">
-            <button class="nav-item nav-toggle" type="button" aria-expanded="{{ request()->routeIs('view-users') ? 'true' : 'false' }}" aria-controls="admin-manage-menu">
+        <div class="nav-dropdown {{ request()->routeIs('view-users') || request()->routeIs('roles') ? 'open' : '' }}">
+            <button class="nav-item nav-toggle" type="button" aria-expanded="{{ request()->routeIs('view-users') || request()->routeIs('roles') ? 'true' : 'false' }}" aria-controls="admin-manage-menu">
                 <span>◉</span>
-                Manage
+                Manage Users
                 <span class="nav-caret">▾</span>
             </button>
             <div class="nav-dropdown-menu" id="admin-manage-menu">
-                <a href="{{ route('view-users') }}" class="nav-subitem">Users</a>
-                <a href="{{ route('dashboard') }}#roles" class="nav-subitem">Roles</a>
+                <a href="{{ route('view-users') }}" class="nav-subitem {{ request()->routeIs('view-users') ? 'active' : '' }}">Users</a>
+                <a href="{{ route('roles') }}" class="nav-subitem {{ request()->routeIs('roles') ? 'active' : '' }}">Roles</a>
                 <a href="{{ route('dashboard') }}#permissions" class="nav-subitem">Permissions</a>
             </div>
         </div>

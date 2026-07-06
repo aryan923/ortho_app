@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -96,6 +97,86 @@ public function searchUsers(Request $request)
                  ->paginate(env('PAGINATION_VALUE_SEARCH', 2)); // Default to 2 if PAGINATION_VALUE_SEARCH is not setENV
 
     return response()->json($users);
+
+
+}
+
+
+//Roles
+
+
+public function createRole(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255|unique:roles',
+        'status' => 'nullable|in:active,inactive',
+    ]);
+
+    if (!isset($validated['status'])) {
+        $validated['status'] = 'active';
+    }
+
+    $role = role::create($validated);
+
+    return response()->json([
+        'message' => 'Role created successfully',
+        'role' => $role,
+    ]);
+
+}
+
+public function editRole(Request $request, $id)
+{
+    $role = role::findOrFail($id);
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+        'status' => 'nullable|in:active,inactive',
+        'permissions' => 'nullable|array',
+        'permissions.*' => 'integer|exists:permissions,id',
+    ]);
+
+    $role->update([
+        'name' => $validated['name'],
+        'status' => $validated['status'] ?? $role->status,
+    ]);
+
+    $role->permissions()->sync($validated['permissions'] ?? []);
+
+    return response()->json([
+        'message' => 'Role updated successfully',
+        'role' => $role->load('permissions'),
+    ]);
+}
+
+public function deleteRole($id)
+{
+    $role = role::findOrFail($id);
+    $role->delete();
+
+    return response()->json(['message' => 'Role deleted successfully']);
+}
+
+public function Roles(){
+    return view('admin.roles');
+}
+
+public function getRoles()
+{
+    $roles = role::with(['permissions:id'])
+        ->latest()
+        ->paginate(env('PAGINATION_VALUE', 10));
+
+        
+
+    return response()->json($roles);
+}
+
+public function getPermissions()
+{
+    $permissions = Permission::orderBy('group')->orderBy('name')->get();
+
+    return response()->json($permissions);
 
 }
 
