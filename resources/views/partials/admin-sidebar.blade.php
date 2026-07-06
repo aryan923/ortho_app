@@ -25,6 +25,11 @@
                 <a href="{{ route('dashboard') }}#permissions" class="nav-subitem">Permissions</a>
             </div>
         </div>
+
+        <a href="{{ route('admin.settings') }}" class="nav-item {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+            <span>◉</span>
+            Settings
+        </a>
     </nav>
 </aside>
 

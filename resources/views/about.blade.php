@@ -377,11 +377,12 @@
             <h2 class="sec-title">Ready to Start Your Recovery?</h2>
             <p class="sec-sub">Tell us your concern and our care coordinator will call you back within 2 hours to confirm your appointment.</p>
         </div>
-        <form class="appt-form" onsubmit="handleBooking(event)" novalidate>
-            <input type="text"  placeholder="Full Name"     required aria-label="Full name">
-            <input type="tel"   placeholder="Phone Number"  required aria-label="Phone number">
-            <input type="email" placeholder="Email Address"          aria-label="Email address">
-            <select required aria-label="Select a service">
+        <form method="POST" action="{{ route('enquiries.store') }}" class="appt-form" novalidate>
+            @csrf
+            <input name="name" type="text" placeholder="Full Name" required aria-label="Full name">
+            <input name="phone" type="tel" placeholder="Phone Number" required aria-label="Phone number">
+            <input name="email" type="email" placeholder="Email Address" aria-label="Email address">
+            <select name="service" required aria-label="Select a service">
                 <option value="" disabled selected>Select a Service</option>
                 <option>Joint Replacement</option>
                 <option>Sports Medicine</option>
@@ -390,6 +391,7 @@
                 <option>Physiotherapy &amp; Rehab</option>
                 <option>Arthritis Management</option>
             </select>
+            <textarea name="message" placeholder="Tell us about your concern" required aria-label="Your message"></textarea>
             <button type="submit">Request My Appointment →</button>
         </form>
     </div>

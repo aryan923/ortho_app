@@ -55,7 +55,7 @@ public function login(Request $request){
     ]);
 
     
-
+    
     if(Auth::attempt($validated, $request->boolean('remember'))){
         $request->session()->regenerate();
         return redirect()->intended('/')->with('success', 'Login successful.');

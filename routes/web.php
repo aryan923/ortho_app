@@ -4,7 +4,7 @@ use App\Http\Controllers\admin\DashboardController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\EnquiryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,5 +73,12 @@ Route::delete('/delete-role/{id}', [DashboardController::class, 'deleteRole'])->
 Route::get('/roles', [DashboardController::class, 'Roles'])->name('roles')->middleware(['auth', 'permission:viewRoles']);
 
 Route::get('/get-roles', [DashboardController::class, 'getRoles'])->name('get-roles')->middleware(['auth', 'permission:viewRoles']);
+Route::get('/get-role-options', [DashboardController::class, 'getRoleOptions'])->name('get-role-options')->middleware(['auth', 'permission:viewRoles']);
 
 Route::get('/get-permissions', [DashboardController::class, 'getPermissions'])->name('get-permissions')->middleware(['auth', 'permission:viewRoles']);
+
+Route::get('/admin/settings', [App\Http\Controllers\admin\SettingsController::class, 'index'])->name('admin.settings')->middleware('auth');
+Route::post('/admin/settings', [App\Http\Controllers\admin\SettingsController::class, 'update'])->name('admin.settings.update')->middleware('auth');
+
+// Enquiry Routes
+Route::post('/enquiries', [EnquiryController::class, 'store'])->name('enquiries.store');

@@ -3,7 +3,7 @@
     <div class="wrap">
         <a href="/" class="brand">
             <span class="brand-icon">+</span>
-            OrthoCore Clinic
+            {{ config('site.full_name') }}
         </a>
 
         <nav aria-label="Primary navigation">

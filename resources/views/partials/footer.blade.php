@@ -19,13 +19,13 @@
 
                 {{-- Column 1: Brand --}}
                 <div>
-                    <div class="footer-brand-name">+ OrthoCore Clinic</div>
-                    <p>New York's leading orthopedic and physiotherapy centre. Precision care for bones, joints, and the full musculoskeletal system since 1999.</p>
+                    <div class="footer-brand-name">+ {{ config('site.full_name') }}</div>
+                    <p>{{ config('site.description') }}</p>
                     <address class="footer-addr" style="margin-top:10px;">
-                        123 Ortho Way, Suite 400<br>
-                        New York, NY 10001<br>
-                        <a href="tel:+12125550192">+1 (212) 555-0192</a><br>
-                        <a href="mailto:hello@orthocore.com">hello@orthocore.com</a>
+                        {{ config('site.address_line_1') }}<br>
+                        {{ config('site.address_line_2') }}<br>
+                        <a href="{{ config('site.phone_link') }}">{{ config('site.phone') }}</a><br>
+                        <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a>
                     </address>
                     <div class="footer-socials">
                         <a href="#" class="soc-btn">Facebook</a>

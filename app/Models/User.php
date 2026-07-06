@@ -83,4 +83,9 @@ class User extends Authenticatable
             })
             ->exists();
     }
+
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Doctor;
 use App\Models\Permission;
 use App\Models\role;
 use App\Models\User;
@@ -36,22 +37,13 @@ public function countRoles(){
 public function getUsers(){
     
     
-    $users = User::latest()->paginate(env('PAGINATION_VALUE', 10)); // Default to 10 if PAGINATION_VALUE is not setENV
+    $users = User::with('roles')->latest()->paginate(config('site.pagination.default', 10));
 
     return response()->json($users);
 
 }
 
-public function assignRole(Request $request, $userId)
-{
-    $user = User::findOrFail($userId);
-    $role = $request->input('role');
-    
-    $user->assignRole($role);
 
-    return response()->json(['message' => 'Role assigned successfully']);
-
-}
 
 
 
@@ -64,13 +56,29 @@ public function updateUser(Request $request, $id)
         'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
         'Contact_Number' => 'nullable|string|max:20',
         'address' => 'nullable|string|max:255',
+        'role_id' => 'nullable|exists:roles,id',
     ]);
 
-    $user->update($validated);
+    $updateData = $validated;
+    unset($updateData['role_id']);
+
+    $user->update($updateData);
+
+    if (isset($validated['role_id'])) {
+        $user->roles()->sync([$validated['role_id']]);
+    }
+
+    $role = $user->roles()->first();
+
+    if ($role && $role->name == 'doctor'){
+        $doctor = Doctor::create([
+            'user_id' => $user->id,
+        ]);
+    }
 
     return response()->json([
         'message' => 'User details updated successfully',
-        'user' => $user,
+        'user' => $user->load('roles'),
     ]);
 }
 
@@ -87,14 +95,15 @@ public function searchUsers(Request $request)
 {
     $query = $request->input('query', '');
 
-    $users = User::where(function ($q) use ($query) {
+    $users = User::with('roles')
+                 ->where(function ($q) use ($query) {
                      $q->where('name', 'like', "%{$query}%")
                        ->orWhere('email', 'like', "%{$query}%")
                        ->orWhere('Contact_Number', 'like', "%{$query}%")
                        ->orWhere('address', 'like', "%{$query}%");
                  })
                  ->latest()
-                 ->paginate(env('PAGINATION_VALUE_SEARCH', 2)); // Default to 2 if PAGINATION_VALUE_SEARCH is not setENV
+                 ->paginate(config('site.pagination.search', 2));
 
     return response()->json($users);
 
@@ -163,14 +172,18 @@ public function Roles(){
 
 public function getRoles()
 {
-    $roles = role::with(['permissions:id'])
-        ->latest()
-        ->paginate(env('PAGINATION_VALUE', 10));
-
-        
+    $roles = role::with('permissions')->latest()->paginate(config('site.pagination.default', 10));
 
     return response()->json($roles);
 }
+
+public function getRoleOptions()
+{
+    $roles = role::select('id', 'name')->orderBy('name')->get();
+
+    return response()->json($roles);
+}
+
 
 public function getPermissions()
 {
@@ -179,7 +192,6 @@ public function getPermissions()
     return response()->json($permissions);
 
 }
-
 
 
 }

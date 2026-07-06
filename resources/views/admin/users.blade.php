@@ -725,6 +725,13 @@
                         <label class="edit-label" for="edit-address">Address</label>
                         <textarea id="edit-address" name="address" class="edit-input" maxlength="255" rows="1"></textarea>
                     </div>
+
+                    <div class="edit-field">
+                        <label class="edit-label" for="edit-role">Role</label>
+                        <select id="edit-role" name="role_id" class="edit-input">
+                            <option value="">Select role</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="edit-form-error" class="edit-form-error" aria-live="polite"></div>
@@ -830,6 +837,7 @@
         const searchUsersUrl = '{{ route("userSearch") }}';
         const updateUrlTemplate = '{{ route("users.update", ["id" => "__ID__"]) }}';
         const deleteUrlTemplate = '{{ route("users.delete", ["id" => "__ID__"]) }}';
+        const roleOptionsUrl = '{{ route("get-role-options") }}';
         const csrfToken = '{{ csrf_token() }}';
         const editModal = document.getElementById('edit-user-modal');
         const closeModalBtn = document.getElementById('close-edit-modal');
@@ -841,6 +849,7 @@
         const editEmail = document.getElementById('edit-email');
         const editContactNumber = document.getElementById('edit-contact-number');
         const editAddress = document.getElementById('edit-address');
+        const editRoleSelect = document.getElementById('edit-role');
         const saveEditBtn = document.getElementById('save-edit-btn');
         const createModal = document.getElementById('create-user-modal');
         const closeCreateModalBtn = document.getElementById('close-create-modal');
@@ -860,7 +869,7 @@
         const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
         const deleteFormError = document.getElementById('delete-form-error');
 
-        if (!container || !prevBtn || !nextBtn || !pageInfo || !createBtn || !searchInput || !clearSearchBtn || !editModal || !editForm || !editUserId || !editName || !editEmail || !editContactNumber || !editAddress || !saveEditBtn || !editFormError || !createModal || !createForm || !createFormError || !createName || !createEmail || !createContactNumber || !createAddress || !createPassword || !createPasswordConfirmation || !saveCreateBtn || !deleteModal || !confirmDeleteBtn || !deleteFormError) return;
+        if (!container || !prevBtn || !nextBtn || !pageInfo || !createBtn || !searchInput || !clearSearchBtn || !editModal || !editForm || !editUserId || !editName || !editEmail || !editContactNumber || !editAddress || !editRoleSelect || !saveEditBtn || !editFormError || !createModal || !createForm || !createFormError || !createName || !createEmail || !createContactNumber || !createAddress || !createPassword || !createPasswordConfirmation || !saveCreateBtn || !deleteModal || !confirmDeleteBtn || !deleteFormError) return;
 
         let currentPage = 1;
         let lastPage = 1;
@@ -924,6 +933,7 @@
             editEmail.value = user.email || '';
             editContactNumber.value = user.Contact_Number || '';
             editAddress.value = user.address || '';
+            editRoleSelect.value = user.role_id || '';
             editFormError.textContent = '';
 
             editModal.classList.add('active');
@@ -1035,6 +1045,9 @@
                 const safePhone = escapeHtml(phone);
                 const safeAddress = escapeHtml(address);
                 const userId = Number(user.id) || '';
+                const roleIdValue = Array.isArray(user.roles) && user.roles.length > 0
+                    ? user.roles[0].id
+                    : '';
 
                 return `
                     <tr>
@@ -1053,6 +1066,7 @@
                                     data-user-email="${encodeAttr(email)}"
                                     data-user-phone="${encodeAttr(phone === 'N/A' ? '' : phone)}"
                                     data-user-address="${encodeAttr(address === 'N/A' ? '' : address)}"
+                                    data-user-role-id="${encodeAttr(roleIdValue)}"
                                 >
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                         <path d="M3 17.25V21H6.75L18.37 9.38L14.62 5.63L3 17.25Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
@@ -1097,6 +1111,7 @@
                 email: String(user.email || '').trim(),
                 Contact_Number: String(user.Contact_Number || '').trim(),
                 address: String(user.address || '').trim(),
+                role_id: user.role_id ? Number(user.role_id) : null,
             };
 
             if (!payload.name || !payload.email) {
@@ -1156,6 +1171,31 @@
         function updateSearchUi() {
             const hasSearch = searchTerm.trim().length > 0;
             clearSearchBtn.classList.toggle('visible', hasSearch);
+        }
+
+        let roleOptions = [];
+
+        function loadRoleOptions() {
+            return fetch(roleOptionsUrl, {
+                headers: {
+                    'Accept': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Unable to load role options.');
+                    return response.json();
+                })
+                .then(payload => {
+                    roleOptions = Array.isArray(payload) ? payload : [];
+                    if (!editRoleSelect) return;
+
+                    editRoleSelect.innerHTML = '<option value="">Select role</option>' + roleOptions.map(role => `
+                        <option value="${encodeAttr(role.id)}">${escapeHtml(role.name)}</option>
+                    `).join('');
+                })
+                .catch(() => {
+                    roleOptions = [];
+                });
         }
 
         function loadUsers(page) {
@@ -1355,6 +1395,7 @@
                 email: editEmail.value,
                 Contact_Number: editContactNumber.value,
                 address: editAddress.value,
+                role_id: editRoleSelect.value,
             });
         });
 
@@ -1373,6 +1414,7 @@
                     email: decodeAttr(editBtn.getAttribute('data-user-email')),
                     Contact_Number: decodeAttr(editBtn.getAttribute('data-user-phone')),
                     address: decodeAttr(editBtn.getAttribute('data-user-address')),
+                    role_id: decodeAttr(editBtn.getAttribute('data-user-role-id')),
                 });
                 return;
             }
@@ -1401,8 +1443,10 @@
             }
         });
 
-        loadUsers(1);
-        updateSearchUi();
+        loadRoleOptions().finally(() => {
+            loadUsers(1);
+            updateSearchUi();
+        });
     });
 </script>
 @endpush

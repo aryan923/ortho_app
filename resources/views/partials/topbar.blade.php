@@ -1,11 +1,11 @@
 {{-- ─── TOPBAR ─── --}}
 <div class="topbar">
     <div class="wrap">
-        <span>123 Ortho Way, New York, NY 10001</span>
+        <span>{{ config('site.address_line_1') }}, {{ config('site.address_line_2') }}</span>
         <span>
-            <a href="tel:+12125550192">+1 (212) 555-0192</a>
+            <a href="{{ config('site.phone_link') }}">{{ config('site.phone') }}</a>
             &nbsp;|&nbsp;
-            <a href="mailto:hello@orthocore.com">hello@orthocore.com</a>
+            <a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a>
         </span>
     </div>
 </div>
