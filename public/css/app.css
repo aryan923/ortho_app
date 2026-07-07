@@ -38,6 +38,24 @@ ul { list-style: none; }
 
 /* ─── LAYOUT ─── */
 .wrap { width: min(1140px, 90vw); margin: 0 auto; }
+.wrap.admin-shell { width: calc(100vw - 24px); max-width: none; margin: 0 24px 0 0; padding: 0; }
+.admin-shell { display: grid; width: 100%; grid-template-columns: 260px minmax(0, 1fr); }
+.admin-shell > .admin-sidebar { align-self: flex-start; min-height: calc(100vh - 100px); position: sticky; top: 100px; }
+    color: var(--ink-md);
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.2s, color 0.2s;
+}
+.nav-subitem:hover,
+.nav-subitem.active {
+    background: var(--blue-lt);
+    color: var(--blue-dk);
+}
+@media (max-width: 920px) {
+    .wrap.admin-shell { width: 100%; margin: 0; padding: 0 16px; }
+    .admin-shell { grid-template-columns: 1fr; }
+}
+
 .sec  { padding: 64px 0; }
 
 /* ─── TAG / BADGE ─── */

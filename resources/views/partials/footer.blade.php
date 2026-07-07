@@ -66,10 +66,9 @@
                 <div>
                     <h4>Clinic Hours</h4>
                     <ul>
-                        <li>Mon – Fri: 8 am – 7 pm</li>
-                        <li>Saturday: 9 am – 5 pm</li>
-                        <li>Sunday: Closed</li>
-                        <li>Emergency: 24 / 7</li>
+                        @foreach(array_filter(array_map('trim', explode("\n", config('site.clinic_hours')))) as $line)
+                            <li>{{ $line }}</li>
+                        @endforeach
                     </ul>
                     <h4 style="margin-top:14px;">Accepted Plans</h4>
                     <ul>

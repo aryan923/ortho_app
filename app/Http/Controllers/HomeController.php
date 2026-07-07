@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -33,8 +34,17 @@ class HomeController extends Controller
 
     public function blog()
     {
-        return view('blog');
+        $blogs = Blog::orderBy('created_at', 'desc')->paginate(10);
+
+        return view('blog', [
+            'blogs' => $blogs,
+        ]);
     }
-    
-    
+
+    public function showBlog(Blog $blog)
+    {
+        return view('blog-show', [
+            'blog' => $blog,
+        ]);
+    }
 }

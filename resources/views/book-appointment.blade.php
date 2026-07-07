@@ -171,11 +171,11 @@
             <nav class="breadcrumb" aria-label="Breadcrumb">
                 <a href="/">Home</a>
                 <span>›</span>
-                <span>Book an Appointment</span>
+                <span>{{ config('page.book_appointment.hero_label', 'Book Appointment') }}</span>
             </nav>
-            <span class="tag white">Online Scheduling</span>
-            <h1>Book Your Appointment in Minutes</h1>
-            <p>Choose your specialist, pick a date that works for you, and select an available time slot. We'll confirm within 2 hours.</p>
+            <span class="tag white">{{ config('page.book_appointment.hero_label', 'Book Appointment') }}</span>
+            <h1>{{ config('page.book_appointment.hero_title', 'Book Your Appointment in Minutes') }}</h1>
+            <p>{{ config('page.book_appointment.hero_subtitle', 'Choose your specialist, pick a date that works for you, and select an available time slot. We\'ll confirm within 2 hours.') }}</p>
             <div class="hero-trust-row">
                 <div class="hero-trust-item"><span class="htick">✓</span> No hidden fees</div>
                 <div class="hero-trust-item"><span class="htick">✓</span> Same-day slots available</div>
@@ -184,8 +184,8 @@
         </div>
         <div class="page-hero-img">
             <img
-                src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=800&q=85"
-                alt="Doctor reviewing patient appointment on tablet"
+                src="{{ config('page.book_appointment.hero_image', 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=800&q=85') }}"
+                alt="{{ config('page.book_appointment.hero_title', 'Book Your Appointment in Minutes') }}"
                 loading="eager"
                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=85';">
         </div>
@@ -359,9 +359,15 @@
                     <h4>Clinic Hours</h4>
                     <table style="width:100%;font-size:13px;color:var(--ink-md);">
                         <tbody>
-                            <tr><td style="padding:4px 0;">Monday – Friday</td><td style="font-weight:700;color:var(--ink);text-align:right;">8:00 AM – 7:00 PM</td></tr>
-                            <tr><td style="padding:4px 0;">Saturday</td><td style="font-weight:700;color:var(--ink);text-align:right;">9:00 AM – 3:00 PM</td></tr>
-                            <tr><td style="padding:4px 0;">Sunday</td><td style="font-weight:700;color:#e95d44;text-align:right;">Closed</td></tr>
+                            @foreach(array_filter(array_map('trim', explode("\n", config('site.clinic_hours')))) as $line)
+                                @php
+                                    $parts = explode(':', $line, 2);
+                                @endphp
+                                <tr>
+                                    <td style="padding:4px 0;">{{ trim($parts[0] ?? $line) }}</td>
+                                    <td style="font-weight:700;color:var(--ink);text-align:right;">{{ trim($parts[1] ?? '') }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <div style="margin-top:12px;padding:10px;background:var(--blue-lt);border-radius:9px;font-size:12.5px;color:var(--blue-dk);font-weight:600;">

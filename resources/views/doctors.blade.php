@@ -133,11 +133,11 @@
         <nav class="breadcrumb" aria-label="Breadcrumb">
             <a href="/">Home</a>
             <span>›</span>
-            <span>Our Doctors</span>
+            <span>{{ config('page.doctors.hero_label', 'Our Doctors') }}</span>
         </nav>
-        <span class="tag white">Meet the Team</span>
-        <h1>World-Class Orthopedic Specialists</h1>
-        <p>Our team of board-certified orthopedic surgeons, sports medicine physicians, and physiotherapists brings decades of combined expertise to every patient.</p>
+        <span class="tag white">{{ config('page.doctors.hero_label', 'Our Doctors') }}</span>
+        <h1>{{ config('page.doctors.hero_title', 'Meet the specialists who guide your recovery') }}</h1>
+        <p>{{ config('page.doctors.hero_subtitle', 'Our team blends world-class orthopedic skill with compassionate care to deliver treatment plans tailored to you.') }}</p>
         <div class="hero-stats">
             <div class="hero-stat"><strong>12</strong><span>Specialists</span></div>
             <div class="hero-stat"><strong>25+</strong><span>Years Avg. Experience</span></div>

@@ -30,25 +30,46 @@
             <span>◉</span>
             Settings
         </a>
+        <div class="nav-dropdown {{ request()->routeIs('admin.cms.*') ? 'open' : '' }}">
+            <button class="nav-item nav-toggle" type="button" aria-expanded="{{ request()->routeIs('admin.cms.*') ? 'true' : 'false' }}" aria-controls="admin-cms-menu">
+                <span>◉</span>
+                Page CMS
+                <span class="nav-caret">▾</span>
+            </button>
+            <div class="nav-dropdown-menu" id="admin-cms-menu">
+                <a href="{{ route('admin.cms.edit', ['page' => 'home']) }}" class="nav-subitem {{ request()->routeIs('admin.cms.edit') && request()->route('page') === 'home' ? 'active' : '' }}">Home</a>
+                <a href="{{ route('admin.cms.edit', ['page' => 'about']) }}" class="nav-subitem {{ request()->routeIs('admin.cms.edit') && request()->route('page') === 'about' ? 'active' : '' }}">About</a>
+                <a href="{{ route('admin.cms.edit', ['page' => 'services']) }}" class="nav-subitem {{ request()->routeIs('admin.cms.edit') && request()->route('page') === 'services' ? 'active' : '' }}">Services</a>
+                <a href="{{ route('admin.cms.edit', ['page' => 'doctors']) }}" class="nav-subitem {{ request()->routeIs('admin.cms.edit') && request()->route('page') === 'doctors' ? 'active' : '' }}">Doctors</a>
+                <a href="{{ route('admin.cms.edit', ['page' => 'blog']) }}" class="nav-subitem {{ request()->routeIs('admin.cms.edit') && request()->route('page') === 'blog' ? 'active' : '' }}">Blog</a>
+                <a href="{{ route('admin.cms.edit', ['page' => 'book_appointment']) }}" class="nav-subitem {{ request()->routeIs('admin.cms.edit') && request()->route('page') === 'book_appointment' ? 'active' : '' }}">Book Appointment</a>
+            </div>
+        </div>
+        <a href="{{ route('admin.blogs.index') }}" class="nav-item {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
+            <span>◉</span>
+            Blog Posts
+        </a>
     </nav>
 </aside>
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const toggle = document.querySelector('.nav-toggle');
-        const dropdown = document.querySelector('.nav-dropdown');
+        const dropdownToggles = document.querySelectorAll('.nav-dropdown > .nav-toggle');
 
-        if (!toggle || !dropdown || toggle.dataset.bound === '1') {
-            return;
-        }
+        dropdownToggles.forEach(function (toggle) {
+            const dropdown = toggle.closest('.nav-dropdown');
+            if (!dropdown || toggle.dataset.bound === '1') {
+                return;
+            }
 
-        toggle.dataset.bound = '1';
+            toggle.dataset.bound = '1';
 
-        toggle.addEventListener('click', function () {
-            const isOpen = dropdown.classList.contains('open');
-            dropdown.classList.toggle('open', !isOpen);
-            toggle.setAttribute('aria-expanded', String(!isOpen));
+            toggle.addEventListener('click', function () {
+                const isOpen = dropdown.classList.contains('open');
+                dropdown.classList.toggle('open', !isOpen);
+                toggle.setAttribute('aria-expanded', String(!isOpen));
+            });
         });
     });
 </script>

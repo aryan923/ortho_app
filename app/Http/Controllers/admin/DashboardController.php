@@ -103,7 +103,7 @@ public function searchUsers(Request $request)
                        ->orWhere('address', 'like', "%{$query}%");
                  })
                  ->latest()
-                 ->paginate(config('site.pagination.search', 2));
+                 ->paginate(config('site.pagination.default', 10));
 
     return response()->json($users);
 

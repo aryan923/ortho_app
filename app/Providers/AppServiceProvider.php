@@ -31,12 +31,20 @@ class AppServiceProvider extends ServiceProvider
                         config([$configKey => $value]);
                     }
 
-                    if ($key === 'pagination_default') {
-                        config(['site.pagination.default' => $value]);
+                    if (str_starts_with($key, 'page_')) {
+                        $pageFields = ['hero_label', 'hero_title', 'hero_subtitle', 'hero_cta_text', 'hero_cta_link', 'hero_image'];
+                        foreach ($pageFields as $field) {
+                            $suffix = '_' . $field;
+                            if (str_ends_with($key, $suffix)) {
+                                $pageKey = substr($key, 5, -strlen($suffix));
+                                config(["page.{$pageKey}.{$field}" => $value]);
+                                break;
+                            }
+                        }
                     }
 
-                    if ($key === 'pagination_search') {
-                        config(['site.pagination.search' => $value]);
+                    if ($key === 'pagination_default') {
+                        config(['site.pagination.default' => $value]);
                     }
                 }
 

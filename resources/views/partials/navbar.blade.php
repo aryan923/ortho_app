@@ -2,8 +2,12 @@
 <header class="navbar">
     <div class="wrap">
         <a href="/" class="brand">
-            <span class="brand-icon">+</span>
-            {{ config('site.full_name') }}
+            @if(config('site.logo'))
+                <img src="{{ asset(config('site.logo')) }}" alt="{{ config('site.full_name') }}" class="brand-logo">
+            @else
+                <span class="brand-icon">+</span>
+            @endif
+            <span class="brand-name">{{ config('site.full_name') }}</span>
         </a>
 
         <nav aria-label="Primary navigation">
@@ -95,6 +99,38 @@
         width: 15px;
         height: 15px;
         fill: currentColor;
+    }
+
+    .brand-logo {
+        max-height: 36px;
+        width: auto;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+
+    .brand-name {
+        font-weight: 800;
+        font-size: 1.25rem;
+        letter-spacing: 0.02em;
+        color: var(--ink-dark);
+        vertical-align: middle;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .brand-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 700;
+        margin-right: 10px;
+        vertical-align: middle;
     }
 
     @media (max-width: 900px) {

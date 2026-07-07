@@ -116,17 +116,17 @@
             <nav class="breadcrumb" aria-label="Breadcrumb">
                 <a href="/">Home</a>
                 <span>/</span>
-                <span>About Us</span>
+                <span>{{ config('page.about.hero_label', 'About Us') }}</span>
             </nav>
-            <span class="tag white">Est. 1999 · New York</span>
-            <h1>We've Been Helping People Move Better for Over 25 Years</h1>
-            <p>OrthoCore was founded on one belief: every patient deserves a specialist who listens, diagnoses accurately, and builds a plan that fits their real life — not just a textbook protocol.</p>
-            <a href="#our-story" class="btn btn-ghost" style="border-color:rgba(255,255,255,.45);color:#fff;background:rgba(255,255,255,.12);">Read Our Story</a>
+            <span class="tag white">{{ config('page.about.hero_label', 'About Us') }}</span>
+            <h1>{{ config('page.about.hero_title', "We've Been Helping People Move Better for Over 25 Years") }}</h1>
+            <p>{{ config('page.about.hero_subtitle', 'OrthoCore was founded on one belief: every patient deserves a specialist who listens, diagnoses accurately, and builds a plan that fits their real life — not just a textbook protocol.') }}</p>
+            <a href="{{ config('page.about.hero_cta_link', '#our-story') }}" class="btn btn-ghost" style="border-color:rgba(255,255,255,.45);color:#fff;background:rgba(255,255,255,.12);">{{ config('page.about.hero_cta_text', 'Read Our Story') }}</a>
         </div>
         <div class="page-hero-img">
             <img
-                src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=900&q=85"
-                alt="Orthopedic team in a modern clinic"
+                src="{{ config('page.about.hero_image', 'https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=900&q=85') }}"
+                alt="{{ config('page.about.hero_title', "We've Been Helping People Move Better for Over 25 Years") }}"
                 loading="eager"
                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=85'">
         </div>

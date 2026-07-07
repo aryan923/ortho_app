@@ -88,11 +88,11 @@
             <nav class="breadcrumb" aria-label="Breadcrumb">
                 <a href="/">Home</a>
                 <span>›</span>
-                <span>Services</span>
+                <span>{{ config('page.services.hero_label', 'Services') }}</span>
             </nav>
-            <span class="tag white">What We Treat</span>
-            <h1>Comprehensive Orthopedic &amp; Physiotherapy Services</h1>
-            <p>From joint replacements and spine surgery to sports rehabilitation and physiotherapy — every treatment plan at OrthoCore is built around you.</p>
+            <span class="tag white">{{ config('page.services.hero_label', 'Services') }}</span>
+            <h1>{{ config('page.services.hero_title', 'Comprehensive orthopedic care for every stage of recovery') }}</h1>
+            <p>{{ config('page.services.hero_subtitle', 'From diagnostics to rehabilitation, our multi-specialty services are designed to restore movement and comfort quickly and confidently.') }}</p>
             <div class="hero-features">
                 <div class="hero-feat"><span class="feat-dot"></span> 12 specialist doctors</div>
                 <div class="hero-feat"><span class="feat-dot"></span> 7 subspecialties</div>
@@ -101,8 +101,8 @@
             </div>
         </div>
         <div class="page-hero-img">
-            <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=900&q=85"
-                alt="Orthopedic specialists reviewing patient care in a modern clinic"
+            <img src="{{ config('page.services.hero_image', 'https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=900&q=85') }}"
+                alt="{{ config('page.services.hero_title', 'Comprehensive orthopedic care for every stage of recovery') }}"
                 loading="eager"
                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80';">
         </div>

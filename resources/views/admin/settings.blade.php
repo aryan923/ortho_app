@@ -141,66 +141,183 @@
 
     .panel-card {
         background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 28px;
+        padding: 32px;
+        box-shadow: 0 18px 48px rgba(15, 31, 58, 0.08);
+    }
+
+    .admin-hero {
+        background: #fff;
         border: 1px solid #dde8f7;
         border-radius: 24px;
         padding: 24px;
-        box-shadow: 0 16px 38px rgba(15, 31, 58, 0.08);
+        box-shadow: 0 18px 48px rgba(15, 31, 58, 0.08);
     }
 
-    .panel-card h1 {
-        margin: 0 0 12px;
-        font-size: 1.6rem;
+    .admin-hero h1 {
+        margin: 0 0 8px;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .admin-hero p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: #64748b;
+    }
+
+    .panel-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e9f0fa;
+        margin-bottom: 24px;
+    }
+
+    .panel-title-group {
+        display: grid;
+        gap: 8px;
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .panel-title-group h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .panel-description {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: #64748b;
     }
 
     .form-grid {
         display: grid;
         gap: 18px;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(280px, 420px));
+        max-width: calc(100% - 0px);
+        align-items: start;
     }
 
     .form-field {
         display: grid;
         gap: 8px;
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .form-field.full-width {
+        grid-column: 1 / -1;
+        max-width: 860px;
     }
 
     .form-field label {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        color: #34405c;
+        color: #475569;
+        margin-bottom: 0;
+    }
+
+    .form-field--logo {
+        padding-top: 4px;
     }
 
     .form-field input,
     .form-field textarea {
         width: 100%;
-        border: 1px solid #dfe7f2;
-        border-radius: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 14px;
         padding: 12px 14px;
         font-size: 14px;
-        color: #1f3556;
+        color: #0f172a;
+        background: #f8fafc;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus {
+        outline: none;
+        border-color: #7c3aed;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.08);
+    }
+
+    .form-field .help-text {
+        margin: 8px 0 0;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .form-field--compact {
+        max-width: 360px;
+    }
+
+    .form-field--compact input {
+        width: 100%;
+    }
+
+    .logo-upload-row {
+        display: grid;
+        gap: 10px;
+        align-items: center;
+        grid-template-columns: auto 1fr;
+    }
+
+    .logo-upload-row input {
+        max-width: 220px;
+    }
+
+    .logo-preview {
+        max-height: 54px;
+        max-width: 120px;
+        border-radius: 14px;
+        object-fit: contain;
+        display: block;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        padding: 6px;
+    }
+
+    .form-field img {
+        max-width: 100%;
+        border-radius: 12px;
+        object-fit: contain;
     }
 
     textarea {
         resize: vertical;
         min-height: 120px;
+        background: #f8fafc;
     }
 
     .form-actions {
         display: flex;
         justify-content: flex-end;
         gap: 12px;
-        margin-top: 18px;
+        margin-top: 24px;
     }
 
     .btn-primary {
         border: 0;
         background: linear-gradient(135deg, #1253c8, #2877ff);
         color: #fff;
-        border-radius: 12px;
-        padding: 12px 18px;
+        border-radius: 14px;
+        padding: 12px 22px;
         font-weight: 700;
         cursor: pointer;
+        box-shadow: 0 10px 24px rgba(18, 83, 200, 0.18);
     }
 
     .alert {
@@ -229,35 +346,44 @@
         @include('partials.admin-sidebar')
 
         <div class="admin-content">
-            <section class="panel-card">
+            <section class="admin-hero">
                 <h1>Site Settings</h1>
+                <p>Update your site branding and contact details. These values are used across your public site and admin header.</p>
+            </section>
 
+            <section class="panel-card">
                 @if(session('success'))
                     <div class="alert">{{ session('success') }}</div>
                 @endif
 
-                <form method="POST" action="{{ route('admin.settings.update') }}">
+                <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-grid">
-                        <div class="form-field">
-                            <label for="site_name">Site Name</label>
-                            <input id="site_name" name="site_name" type="text" value="{{ old('site_name', $values['site_name'] ?? '') }}" required>
-                        </div>
-                        <div class="form-field">
+                        <div class="form-field form-field--compact">
                             <label for="site_full_name">Full Site Name</label>
                             <input id="site_full_name" name="site_full_name" type="text" value="{{ old('site_full_name', $values['site_full_name'] ?? '') }}" required>
                         </div>
-                        <div class="form-field">
-                            <label for="site_logo">Logo URL</label>
-                            <input id="site_logo" name="site_logo" type="text" value="{{ old('site_logo', $values['site_logo'] ?? '') }}">
-                        </div>
-                        <div class="form-field">
+                        <div class="form-field form-field--compact">
                             <label for="site_phone">Contact Phone</label>
                             <input id="site_phone" name="site_phone" type="text" value="{{ old('site_phone', $values['site_phone'] ?? '') }}" required>
+                        </div>
+                        <div class="form-field form-field--logo">
+                            <label for="site_logo">Site Logo</label>
+                            <div class="logo-upload-row">
+                                @if(!empty($values['site_logo']))
+                                    <img src="{{ asset($values['site_logo']) }}" alt="Current logo" class="logo-preview">
+                                @endif
+                                <input id="site_logo" name="site_logo" type="file" accept="image/*">
+                            </div>
                         </div>
                         <div class="form-field">
                             <label for="site_email">Contact Email</label>
                             <input id="site_email" name="site_email" type="email" value="{{ old('site_email', $values['site_email'] ?? '') }}" required>
+                        </div>
+                        <div class="form-field full-width">
+                            <label for="site_clinic_hours">Clinic Hours</label>
+                            <textarea id="site_clinic_hours" name="site_clinic_hours" rows="3">{{ old('site_clinic_hours', $values['site_clinic_hours'] ?? '') }}</textarea>
+                            <p class="help-text">Use new lines for each schedule entry, e.g. Monday – Friday: 8 AM – 7 PM.</p>
                         </div>
                         <div class="form-field">
                             <label for="site_address_line_1">Address Line 1</label>
@@ -272,12 +398,12 @@
                             <textarea id="site_description" name="site_description">{{ old('site_description', $values['site_description'] ?? '') }}</textarea>
                         </div>
                         <div class="form-field">
-                            <label for="pagination_default">Pagination Default</label>
-                            <input id="pagination_default" name="pagination_default" type="number" min="1" max="100" value="{{ old('pagination_default', $values['pagination_default'] ?? 10) }}" required>
+                            <label for="site_admin_email">Admin Email</label>
+                            <input id="site_admin_email" name="site_admin_email" type="email" value="{{ old('site_admin_email', $values['site_admin_email'] ?? '') }}" required>
                         </div>
                         <div class="form-field">
-                            <label for="pagination_search">Pagination Search</label>
-                            <input id="pagination_search" name="pagination_search" type="number" min="1" max="100" value="{{ old('pagination_search', $values['pagination_search'] ?? 2) }}" required>
+                            <label for="pagination_default">Pagination Default</label>
+                            <input id="pagination_default" name="pagination_default" type="number" min="1" max="100" value="{{ old('pagination_default', $values['pagination_default'] ?? 10) }}" required>
                         </div>
                     </div>
 

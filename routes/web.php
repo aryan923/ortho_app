@@ -27,8 +27,6 @@ Route::get('/doctors', [HomeController::class, 'doctors']);
 
 Route::get('/services', [HomeController::class, 'services']);
 
-Route::get('/blog', [HomeController::class, 'blog']);
-
 // Auth Routes
 
 Route::get('/register', [AuthController::class, 'viewRegister'])->name('register')->middleware('guest');
@@ -79,6 +77,19 @@ Route::get('/get-permissions', [DashboardController::class, 'getPermissions'])->
 
 Route::get('/admin/settings', [App\Http\Controllers\admin\SettingsController::class, 'index'])->name('admin.settings')->middleware('auth');
 Route::post('/admin/settings', [App\Http\Controllers\admin\SettingsController::class, 'update'])->name('admin.settings.update')->middleware('auth');
+Route::get('/admin/cms', [App\Http\Controllers\admin\PageContentController::class, 'index'])->name('admin.cms')->middleware('auth');
+Route::get('/admin/cms/{page}', [App\Http\Controllers\admin\PageContentController::class, 'edit'])->name('admin.cms.edit')->middleware('auth');
+Route::post('/admin/cms/{page}', [App\Http\Controllers\admin\PageContentController::class, 'update'])->name('admin.cms.update')->middleware('auth');
+
+Route::get('/admin/blogs', [App\Http\Controllers\admin\BlogController::class, 'index'])->name('admin.blogs.index')->middleware('auth');
+Route::get('/admin/blogs/create', [App\Http\Controllers\admin\BlogController::class, 'create'])->name('admin.blogs.create')->middleware('auth');
+Route::post('/admin/blogs', [App\Http\Controllers\admin\BlogController::class, 'store'])->name('admin.blogs.store')->middleware('auth');
+Route::get('/admin/blogs/{blog}/edit', [App\Http\Controllers\admin\BlogController::class, 'edit'])->name('admin.blogs.edit')->middleware('auth');
+Route::put('/admin/blogs/{blog}', [App\Http\Controllers\admin\BlogController::class, 'update'])->name('admin.blogs.update')->middleware('auth');
+Route::delete('/admin/blogs/{blog}', [App\Http\Controllers\admin\BlogController::class, 'destroy'])->name('admin.blogs.destroy')->middleware('auth');
+
+Route::get('/blog', [App\Http\Controllers\HomeController::class, 'blog'])->name('blog');
+Route::get('/blog/{blog}', [App\Http\Controllers\HomeController::class, 'showBlog'])->name('blog.show');
 
 // Enquiry Routes
 Route::post('/enquiries', [EnquiryController::class, 'store'])->name('enquiries.store');

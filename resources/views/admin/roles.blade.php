@@ -163,17 +163,29 @@
 
 	.panel-head {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		justify-content: space-between;
 		gap: 18px;
 		flex-wrap: wrap;
 		padding-bottom: 8px;
 		border-bottom: 1px solid #e9f0fa;
+		width: 100%;
 	}
 
 	.panel-title-group {
 		display: grid;
 		gap: 4px;
+		flex: 1 1 0;
+		min-width: 0;
+	}
+
+	.panel-tools {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex: 0 1 auto;
+		min-width: 0;
+		justify-content: flex-end;
 	}
 
 	.panel-title-group h3 {

@@ -15,13 +15,17 @@
 
     /* ─── BLOG LAYOUT ─── */
     .blog-section { padding: 56px 0; }
-    .blog-layout { display: grid; grid-template-columns: 1fr 320px; gap: 32px; align-items: start; }
+    .blog-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; align-items: start; }
+    .blog-layout main { max-width: 720px; width: 100%; margin-left: auto; }
 
     /* ─── FEATURED ARTICLE ─── */
     .featured-card {
         background: var(--white); border: 1px solid var(--border);
         border-radius: var(--r-lg); overflow: hidden;
         transition: transform .2s, box-shadow .2s; margin-bottom: 24px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
     .featured-card:hover { transform: translateY(-4px); box-shadow: var(--sh-md); }
     .featured-img { aspect-ratio: 16/7; overflow: hidden; }
@@ -216,11 +220,11 @@
             <nav class="breadcrumb" aria-label="Breadcrumb">
                 <a href="/">Home</a>
                 <span>›</span>
-                <span>Blog</span>
+                <span>{{ config('page.blog.hero_label', 'Blog') }}</span>
             </nav>
-            <span class="tag white">Patient Resources</span>
-            <h1>Orthopedic Health Insights &amp; Patient Guides</h1>
-            <p>Evidence-based articles from our specialist team covering joint health, sports recovery, physiotherapy, and surgical outcomes — written for patients, not clinicians.</p>
+            <span class="tag white">{{ config('page.blog.hero_label', 'Blog') }}</span>
+            <h1>{{ config('page.blog.hero_title', 'Patient resources, expert insights, and clinic updates') }}</h1>
+            <p>{{ config('page.blog.hero_subtitle', 'Read evidence-based articles from our specialists on orthopedics, physiotherapy, recovery, and healthy living.') }}</p>
             <div class="hero-features">
                 <div class="hero-feat"><span class="feat-dot"></span> Written by specialists</div>
                 <div class="hero-feat"><span class="feat-dot"></span> Evidence-based</div>
@@ -228,8 +232,8 @@
             </div>
         </div>
         <div class="page-hero-img">
-            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=85"
-                alt="Doctor reviewing medical literature"
+            <img src="{{ config('page.blog.hero_image', 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=85') }}"
+                alt="{{ config('page.blog.hero_title', 'Patient resources, expert insights, and clinic updates') }}"
                 loading="eager"
                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504813184591-01572f98c85f?auto=format&fit=crop&w=900&q=85';">
         </div>
@@ -245,202 +249,59 @@
             <main>
 
                 {{-- Featured Article --}}
-                <article class="featured-card" aria-label="Featured article">
-                    <div class="featured-img">
-                        <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=1200&q=85"
-                            alt="Surgeon reviewing knee X-ray before joint replacement"
-                            loading="eager"
-                            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=1200&q=85';">
-                    </div>
-                    <div class="featured-body">
-                        <span class="featured-badge">Featured</span>
-                        <span class="article-cat cat-blue">Joint Health</span>
-                        <div class="article-meta">
-                            <span>Dr. Sarah Mitchell, MD</span>
-                            <span>&middot;</span>
-                            <span>June 24, 2026</span>
-                            <span>&middot;</span>
-                            <span>8 min read</span>
+                @if($blogs->count())
+                    @php $featured = $blogs->first(); @endphp
+                    <article class="featured-card" aria-label="Featured article">
+                        <div class="featured-img">
+                            <img src="{{ $featured->image ? asset($featured->image) : 'https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=1200&q=85' }}"
+                                alt="{{ $featured->title }}"
+                                loading="eager"
+                                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=1200&q=85';">
                         </div>
-                        <h2><a href="#">What to Expect Before, During, and After Total Knee Replacement Surgery</a></h2>
-                        <p>Knee replacement surgery is one of the most common and most successful orthopedic procedures performed worldwide — but it's normal to have questions. Our lead joint replacement surgeon walks through the full patient journey, from pre-surgical optimisation and the day of the operation, through to rehabilitation milestones and returning to daily activities.</p>
-                        <a href="#" class="btn btn-solid" style="font-size:13.5px;">Read Article
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                        </a>
-                    </div>
-                </article>
-
-                {{-- Article Grid --}}
-                <div class="article-grid" role="list">
-
-                    {{-- Article 1 --}}
-                    <article class="article-card" role="listitem">
-                        <div class="article-img">
-                            <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=800&q=80"
-                                alt="Athlete receiving sports injury treatment"
-                                loading="lazy"
-                                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80';">
-                        </div>
-                        <div class="article-body">
-                            <span class="article-cat cat-teal">Sports Medicine</span>
+                        <div class="featured-body">
+                            <span class="featured-badge">Featured</span>
+                            <span class="article-cat cat-blue">Blog</span>
                             <div class="article-meta">
-                                <span>Dr. James Okafor, MD</span>
+                                <span>{{ $featured->author }}</span>
                                 <span>&middot;</span>
-                                <span>June 19, 2026</span>
-                                <span>&middot;</span>
-                                <span>6 min read</span>
+                                <span>{{ $featured->created_at->format('M d, Y') }}</span>
                             </div>
-                            <h3><a href="#">ACL Reconstruction Recovery: A Week-by-Week Rehabilitation Guide</a></h3>
-                            <p>From the first 48 hours post-surgery through returning to full sport, here is what each phase of ACL rehab should look and feel like.</p>
-                            <a href="#" class="read-more">Read Article
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                            </a>
+                            <h2><a href="{{ route('blog.show', $featured) }}">{{ $featured->title }}</a></h2>
+                            <p>{{ \Illuminate\Support\Str::limit(strip_tags($featured->content), 160) }}</p>
+                            <a href="{{ route('blog.show', $featured) }}" class="read-more">Read article <span aria-hidden="true">→</span></a>
                         </div>
                     </article>
 
-                    {{-- Article 2 --}}
-                    <article class="article-card" role="listitem">
-                        <div class="article-img">
-                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=80"
-                                alt="Physiotherapist working with patient on rehabilitation"
-                                loading="lazy"
-                                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80';">
+                    @if($blogs->count() > 1)
+                        <div class="article-grid">
+                            @foreach($blogs->skip(1) as $post)
+                                <article class="article-card">
+                                    <div class="article-img">
+                                        <img src="{{ $post->image ? asset($post->image) : 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=900&q=80' }}"
+                                            alt="{{ $post->title }}"
+                                            loading="lazy"
+                                            onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=900&q=80';">
+                                    </div>
+                                    <div class="article-body">
+                                        <span class="article-cat cat-teal">Blog</span>
+                                        <h3><a href="{{ route('blog.show', $post) }}">{{ $post->title }}</a></h3>
+                                        <p>{{ \Illuminate\Support\Str::limit(strip_tags($post->content), 120) }}</p>
+                                        <a href="{{ route('blog.show', $post) }}" class="read-more">Read article <span aria-hidden="true">→</span></a>
+                                    </div>
+                                </article>
+                            @endforeach
                         </div>
-                        <div class="article-body">
-                            <span class="article-cat cat-green">Physiotherapy</span>
-                            <div class="article-meta">
-                                <span>Dr. Rachel Nwosu, DPT</span>
-                                <span>&middot;</span>
-                                <span>June 14, 2026</span>
-                                <span>&middot;</span>
-                                <span>5 min read</span>
-                            </div>
-                            <h3><a href="#">Five Exercises That Protect Your Knees and Reduce Pain Without Surgery</a></h3>
-                            <p>Our lead physiotherapist shares the evidence-backed exercises she prescribes most for patients with early-stage knee osteoarthritis.</p>
-                            <a href="#" class="read-more">Read Article
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                            </a>
-                        </div>
-                    </article>
-
-                    {{-- Article 3 --}}
-                    <article class="article-card" role="listitem">
-                        <div class="article-img">
-                            <img src="https://images.unsplash.com/photo-1666214280557-f1b5022eb634?auto=format&fit=crop&w=800&q=80"
-                                alt="Doctor reviewing spinal MRI with patient"
-                                loading="lazy"
-                                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=800&q=80';">
-                        </div>
-                        <div class="article-body">
-                            <span class="article-cat cat-coral">Spine &amp; Neck</span>
-                            <div class="article-meta">
-                                <span>Dr. Priya Sharma, MD</span>
-                                <span>&middot;</span>
-                                <span>June 9, 2026</span>
-                                <span>&middot;</span>
-                                <span>7 min read</span>
-                            </div>
-                            <h3><a href="#">Herniated Disc: When Conservative Treatment Works and When Surgery Is Needed</a></h3>
-                            <p>Most herniated discs resolve without surgery — but knowing the difference can save months of unnecessary worry or delay the right intervention.</p>
-                            <a href="#" class="read-more">Read Article
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                            </a>
-                        </div>
-                    </article>
-
-                    {{-- Article 4 --}}
-                    <article class="article-card" role="listitem">
-                        <div class="article-img">
-                            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=80"
-                                alt="Elderly patient discussing arthritis management with doctor"
-                                loading="lazy"
-                                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80';">
-                        </div>
-                        <div class="article-body">
-                            <span class="article-cat cat-purple">Arthritis</span>
-                            <div class="article-meta">
-                                <span>Dr. Michael Adeyemi, MD</span>
-                                <span>&middot;</span>
-                                <span>June 3, 2026</span>
-                                <span>&middot;</span>
-                                <span>6 min read</span>
-                            </div>
-                            <h3><a href="#">Understanding Rheumatoid vs. Osteoarthritis: Key Differences and Treatment Paths</a></h3>
-                            <p>Though they share the word "arthritis", these two conditions have very different causes, symptoms, and treatment approaches. Here is how to tell them apart.</p>
-                            <a href="#" class="read-more">Read Article
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                            </a>
-                        </div>
-                    </article>
-
-                    {{-- Article 5 --}}
-                    <article class="article-card" role="listitem">
-                        <div class="article-img">
-                            <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=800&q=80"
-                                alt="X-ray of fractured wrist being examined"
-                                loading="lazy"
-                                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1581595219315-a187dd40c322?auto=format&fit=crop&w=800&q=80';">
-                        </div>
-                        <div class="article-body">
-                            <span class="article-cat cat-amber">Fracture &amp; Trauma</span>
-                            <div class="article-meta">
-                                <span>Dr. Sarah Mitchell, MD</span>
-                                <span>&middot;</span>
-                                <span>May 27, 2026</span>
-                                <span>&middot;</span>
-                                <span>4 min read</span>
-                            </div>
-                            <h3><a href="#">Stress Fractures in Runners: Early Warning Signs and How to Prevent Re-Injury</a></h3>
-                            <p>Stress fractures are among the most misdiagnosed overuse injuries in recreational and competitive runners. Recognising the signs early makes all the difference.</p>
-                            <a href="#" class="read-more">Read Article
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                            </a>
-                        </div>
-                    </article>
-
-                    {{-- Article 6 --}}
-                    <article class="article-card" role="listitem">
-                        <div class="article-img">
-                            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80"
-                                alt="Surgeon reviewing robotic-assisted surgery planning"
-                                loading="lazy"
-                                onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80';">
-                        </div>
-                        <div class="article-body">
-                            <span class="article-cat cat-blue">Joint Health</span>
-                            <div class="article-meta">
-                                <span>Dr. James Okafor, MD</span>
-                                <span>&middot;</span>
-                                <span>May 20, 2026</span>
-                                <span>&middot;</span>
-                                <span>9 min read</span>
-                            </div>
-                            <h3><a href="#">Robotic-Assisted Hip Replacement: How Technology Is Improving Surgical Precision</a></h3>
-                            <p>Mako robotic technology allows our surgeons to plan and execute joint replacements with sub-millimetre accuracy. Here is how it works and why it matters for patients.</p>
-                            <a href="#" class="read-more">Read Article
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                            </a>
-                        </div>
-                    </article>
-
-                </div>{{-- /article-grid --}}
-
-                {{-- Pagination --}}
-                <nav class="pagination" aria-label="Article pagination">
-                    <a href="#" class="page-btn wide" aria-label="Previous page">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="15 18 9 12 15 6"/></svg>
-                        Prev
-                    </a>
-                    <a href="#" class="page-btn active" aria-label="Page 1">1</a>
-                    <a href="#" class="page-btn" aria-label="Page 2">2</a>
-                    <a href="#" class="page-btn" aria-label="Page 3">3</a>
-                    <span class="page-btn" style="border:none;cursor:default;color:var(--ink-lt);">&hellip;</span>
-                    <a href="#" class="page-btn" aria-label="Page 8">8</a>
-                    <a href="#" class="page-btn wide" aria-label="Next page">
-                        Next
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
-                    </a>
-                </nav>
+                    @endif
+                @else
+                    <section class="panel-card">
+                        <p>No blog articles are published yet.</p>
+                    </section>
+                @endif
+                @if($blogs->hasPages())
+                    <nav class="pagination" aria-label="Article pagination">
+                        {!! $blogs->withQueryString()->links() !!}
+                    </nav>
+                @endif
 
             </main>{{-- /main --}}
 
