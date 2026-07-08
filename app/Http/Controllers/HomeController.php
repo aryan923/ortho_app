@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\Doctor;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,7 +25,8 @@ class HomeController extends Controller
 
     public function BookAppointment()
     {
-        return view('book-appointment');
+        $doctors = Doctor::with('user')->get();
+        return view('book-appointment', compact('doctors'));
     }
 
     public function doctors()

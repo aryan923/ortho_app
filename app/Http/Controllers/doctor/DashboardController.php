@@ -32,4 +32,19 @@ class DashboardController extends Controller
         $doctor = Doctor::findOrFail($id);  // 
         return response()->json($doctor);
     }
+
+    public function dashboard()
+    {
+        $doctor = auth()->user()->doctor;
+
+        if (! $doctor) {
+            abort(404, 'Doctor profile not found.');
+        }
+
+        $bookings = $doctor->bookings()->with('user')->latest()->paginate(config('site.pagination.default', 10));
+
+        return view('doctor.dashboard', compact('doctor', 'bookings'));
+    }
+
+    
 }

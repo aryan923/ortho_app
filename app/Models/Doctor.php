@@ -11,6 +11,7 @@ class Doctor extends Model
     use HasFactory;
     
 protected $fillable = [      
+        'user_id',
         'specialization',
         'license_number',
         'clinic_address',
@@ -22,4 +23,8 @@ protected $fillable = [
         return $this->belongsTo(User::class);
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

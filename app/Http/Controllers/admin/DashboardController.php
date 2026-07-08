@@ -79,6 +79,7 @@ public function updateUser(Request $request, $id)
     return response()->json([
         'message' => 'User details updated successfully',
         'user' => $user->load('roles'),
+        'doctor' => isset($doctor) ? $doctor : null,
     ]);
 }
 
