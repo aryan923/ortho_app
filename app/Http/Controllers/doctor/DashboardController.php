@@ -8,11 +8,26 @@ use App\Models\Doctor;
 
 class DashboardController extends Controller
 {
-    //
-    public function updateProfile(Request $request, $id )
+    public function editProfile()
     {
-        $doctor = Doctor::findOrFail($id);
-       $validated = $request->validate([
+        $doctor = auth()->user()->doctor;
+
+        if (! $doctor) {
+            abort(404, 'Doctor profile not found.');
+        }
+
+        return view('doctor.profile', compact('doctor'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $doctor = auth()->user()->doctor;
+
+        if (! $doctor) {
+            abort(404, 'Doctor profile not found.');
+        }
+
+        $validated = $request->validate([
             'specialization' => 'nullable|string|max:255',
             'license_number' => 'nullable|string|max:255|unique:doctors,license_number,' . $doctor->id,
             'clinic_address' => 'nullable|string|max:255',
@@ -21,16 +36,18 @@ class DashboardController extends Controller
 
         $doctor->update($validated);
 
-        return response()->json([
-            'message' => 'Doctor profile updated successfully',
-            'doctor' => $doctor,
-        ]);
+        return redirect()->route('doctor.profile.edit')->with('success', 'Profile updated successfully.');
     }
 
     public function viewProfile($id)
     {
         $doctor = Doctor::findOrFail($id);  // 
         return response()->json($doctor);
+    }
+
+    public function getBookings()
+    {
+        return redirect()->route('doctor.dashboard');
     }
 
     public function dashboard()
@@ -42,8 +59,12 @@ class DashboardController extends Controller
         }
 
         $bookings = $doctor->bookings()->with('user')->latest()->paginate(config('site.pagination.default', 10));
+        $totalBookings = $doctor->bookings()->count();
+        $upcomingBookings = $doctor->bookings()
+            ->where('appointment_time', '>=', now())
+            ->count();
 
-        return view('doctor.dashboard', compact('doctor', 'bookings'));
+        return view('doctor.dashboard', compact('doctor', 'bookings', 'totalBookings', 'upcomingBookings'));
     }
 
     

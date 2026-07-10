@@ -40,15 +40,23 @@
             @endguest
 
             @auth
-                <form method="POST" action="{{ route('logout.submit') }}" class="auth-form">
-                    @csrf
-                    <button type="submit" class="auth-pill">
+                <div class="profile-menu">
+                    <button type="button" class="profile-pill" aria-haspopup="true" aria-expanded="false">
+                        <span>{{ \Illuminate\Support\Str::limit(auth()->user()->name, 18) }}</span>
                         <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M10 17l1.41 1.41L7.83 21H5v-2.83l5-5 2.83 2.83ZM16 3a2 2 0 0 1 2 2v4h-2V5H7v14h11v-4h2v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9Z"/>
+                            <path d="M12 15.5l-5-5h10l-5 5z"/>
                         </svg>
-                        <span>Logout</span>
                     </button>
-                </form>
+                    <div class="profile-dropdown" aria-label="Profile menu">
+                        <a href="{{ route('doctor.dashboard') }}">Dashboard</a>
+                        <a href="{{ route('doctor.schedule') }}">Schedule</a>
+                        <a href="{{ route('doctor.profile.edit') }}">Profile</a>
+                        <form method="POST" action="{{ route('logout.submit') }}">
+                            @csrf
+                            <button type="submit">Logout</button>
+                        </form>
+                    </div>
+                </div>
             @endauth
 
             <a href="tel:+12125550192" class="btn btn-ghost btn-sm">Call Now</a>
@@ -68,15 +76,16 @@
         flex-wrap: wrap;
     }
 
-    .auth-form {
-        display: inline-flex;
+    .profile-menu {
+        position: relative;
     }
 
+    .profile-pill,
     .auth-pill {
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        padding: 8px 12px;
+        padding: 8px 14px;
         border: 1px solid var(--border);
         border-radius: 999px;
         background: var(--white);
@@ -86,8 +95,10 @@
         line-height: 1;
         box-shadow: var(--sh-sm);
         transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
+        cursor: pointer;
     }
 
+    .profile-pill:hover,
     .auth-pill:hover {
         transform: translateY(-1px);
         border-color: var(--blue);
@@ -95,10 +106,62 @@
         box-shadow: var(--sh-md);
     }
 
+    .profile-pill svg {
+        width: 12px;
+        height: 12px;
+        fill: currentColor;
+    }
+
+    .profile-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        min-width: 210px;
+        background: #fff;
+        border: 1px solid rgba(15, 31, 58, 0.12);
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(15, 31, 58, 0.1);
+        z-index: 20;
+        padding: 10px 0;
+    }
+
+    .profile-menu.open .profile-dropdown {
+        display: block;
+    }
+
+    .profile-dropdown a,
+    .profile-dropdown button {
+        width: 100%;
+        text-align: left;
+        padding: 12px 18px;
+        background: transparent;
+        border: none;
+        color: var(--ink);
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
+    .profile-dropdown a:hover,
+    .profile-dropdown button:hover {
+        background: rgba(18, 83, 200, 0.08);
+        color: var(--blue);
+    }
+
     .auth-pill svg {
         width: 15px;
         height: 15px;
         fill: currentColor;
+    }
+
+    .profile-menu[data-open="true"] .profile-dropdown {
+        display: block;
+    }
+
+    .profile-pill[aria-expanded="true"] {
+        border-color: rgba(18,83,200,0.45);
     }
 
     .brand-logo {
@@ -138,4 +201,28 @@
             margin-top: 8px;
         }
     }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.querySelector('[data-profile-toggle]');
+        if (!toggle) return;
+
+        const menu = toggle.closest('.profile-menu');
+        const dropdown = menu.querySelector('[data-profile-dropdown]');
+
+        toggle.addEventListener('click', function () {
+            const isOpen = menu.dataset.open === 'true';
+            menu.dataset.open = isOpen ? 'false' : 'true';
+            toggle.setAttribute('aria-expanded', String(!isOpen));
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!menu.contains(event.target)) {
+                menu.dataset.open = 'false';
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+</script>
 </style>

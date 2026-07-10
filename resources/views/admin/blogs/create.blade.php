@@ -1,169 +1,82 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Create Blog Post | OrthoCore Clinic')
 
 @push('styles')
 <style>
-    .admin-page { padding: 32px 0 70px; background: linear-gradient(180deg, #f6fbff 0%, #ffffff 100%); }
-    .admin-shell { display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start; }
-    .admin-shell > .admin-sidebar { align-self: stretch; min-height: 100%; }
-    .admin-sidebar {
-        background: #0f1f3a;
-        color: #fff;
-        border-radius: 24px;
-        padding: 20px;
-        min-height: 70vh;
-        height: 100%;
-        box-shadow: 0 16px 38px rgba(15, 31, 58, 0.12);
-    }
-    .sidebar-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding-bottom: 18px;
-        border-bottom: 1px solid rgba(255,255,255,0.12);
-        margin-bottom: 18px;
-    }
-    .brand-mark {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        display: grid;
-        place-items: center;
-        font-weight: 800;
-        background: linear-gradient(135deg, #1253c8, #4fd3cc);
-        color: white;
-    }
-    .brand-name {
-        font-size: 15px;
-        font-weight: 700;
-        margin: 0;
-    }
-    .brand-subtitle {
-        color: #9db2cf;
-        font-size: 12px;
-    }
-    .sidebar-nav {
-        display: grid;
-        gap: 8px;
-    }
-    .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 11px 12px;
-        border-radius: 12px;
-        color: #dce8f7;
-        text-decoration: none;
-        font-size: 14px;
-        transition: background 0.2s, color 0.2s;
-    }
-    .nav-item:hover,
-    .nav-item.active {
-        background: rgba(255,255,255,0.12);
-        color: #fff;
-    }
-    .nav-dropdown {
-        display: grid;
-        gap: 6px;
-    }
-    .nav-toggle {
-        width: 100%;
-        justify-content: space-between;
-        border: 0;
-        background: transparent;
-        cursor: pointer;
-        font: inherit;
-        text-align: left;
-    }
-    .nav-caret {
-        margin-left: auto;
-        color: #8fd7d1;
-        font-size: 12px;
-    }
-    .nav-dropdown-menu {
-        display: none;
-        gap: 4px;
-        padding-left: 22px;
-        margin-top: 4px;
-    }
-    .nav-dropdown.open .nav-dropdown-menu {
-        display: grid;
-    }
-    .nav-dropdown.open .nav-caret {
-        transform: rotate(180deg);
-    }
-    .nav-subitem {
-        padding: 8px 10px;
-        border-radius: 10px;
-        color: #cfe0f3;
-        text-decoration: none;
-        font-size: 13px;
-    }
-    .nav-subitem:hover {
-        background: rgba(255,255,255,0.1);
-        color: #fff;
-    }
-    .admin-content { display: grid; gap: 20px; }
-    .admin-hero, .panel-card { background: #fff; border: 1px solid #dde8f7; border-radius: 24px; padding: 24px; box-shadow: 0 16px 38px rgba(15, 31, 58, 0.08); }
-    .admin-hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: nowrap; }
-    .admin-hero h1 { margin: 0; font-size: clamp(1.6rem, 2.2vw, 2.1rem); font-weight: 800; color: #0f1f3a; min-width: 0; }
-    .admin-hero button { white-space: nowrap; }
-    .admin-hero p { display: none; }
-    .form-grid { display: grid; gap: 20px; grid-template-columns: 1fr 320px; align-items: start; }
-    .form-section { background: #f8fafc; border: 1px solid #e8eff8; border-radius: 20px; padding: 22px; }
-    .field-row { display: grid; gap: 14px; }
-    .field-row label { font-size: 12px; font-weight: 700; color: #475569; }
-    .field-row input, .field-row textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 14px; padding: 12px 14px; font-size: 14px; color: #0f172a; background: #fff; }
-    .field-row textarea { min-height: 220px; }
-    .btn-primary { border: 0; border-radius: 14px; padding: 12px 22px; background: linear-gradient(135deg, #1253c8, #2877ff); color: #fff; font-weight: 700; cursor: pointer; }
-    .alert { padding: 14px 18px; border-radius: 14px; background: #e6f4ff; color: #0f385d; border: 1px solid #c9e2ff; }
+    .page-heading { margin-bottom: 24px; }
+    .page-heading h1 { font-size: 1.7rem; font-weight: 700; color: #1a2550; margin: 0 0 4px; }
+    .page-heading p  { font-size: 0.93rem; color: #6b7a99; margin: 0; }
+    .panel { background: #fff; border: 1px solid #e3e9f3; border-radius: 14px; padding: 20px; }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+    .panel-head h3 { font-size: 1rem; font-weight: 700; color: #1a2550; margin: 0 0 4px; }
+    .panel-head .panel-caption { font-size: 0.85rem; color: #6b7a99; margin: 0; }
+    .create-btn { display: inline-flex; align-items: center; gap: 6px; background: #4070f4; color: #fff; border: none; border-radius: 10px; padding: 9px 16px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .create-btn:hover { background: #2f5ce2; color: #fff; }
+    .btn-primary { background: #4070f4; color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .btn-primary:hover { background: #2f5ce2; }
+    .btn-secondary { background: #f1f5fb; color: #4a5568; border: 1px solid #dce4f0; border-radius: 10px; padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn-secondary:hover { background: #e3e9f3; }
+    .form-field label { display: block; font-size: 0.85rem; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
+    .form-field input, .form-field textarea, .form-field select { width: 100%; border: 1px solid #dce4f0; border-radius: 10px; padding: 10px 12px; font-size: 0.9rem; color: #1a2550; background: #fff; outline: none; }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: #4070f4; box-shadow: 0 0 0 3px rgba(64,112,244,0.12); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .form-field.full-width { grid-column: 1 / -1; }
+    .form-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+    .help-text { font-size: 0.8rem; color: #9aa5be; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; padding: 10px 14px; font-size: 0.8rem; font-weight: 600; color: #9aa5be; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #e3e9f3; background: #fafbff; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid #f1f5fb; font-size: 0.9rem; color: #3d4a6b; vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f8faff; }
+    .alert { background: #e8faf2; border: 1px solid #9ae6b4; color: #276749; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; font-size: 0.9rem; }
+    .img-thumb { width: 60px; height: 40px; object-fit: cover; border-radius: 6px; }
 </style>
 @endpush
 
+
 @section('content')
-<div class="admin-page">
-    <div class="wrap admin-shell">
-        @include('partials.admin-sidebar')
 
-        <div class="admin-content">
-            <section class="admin-hero">
-                <h1>Create Blog Post</h1>
-                <button type="submit" form="blog-form" class="btn-primary">Publish Post</button>
-            </section>
+<div class="page-heading">
+    <h1>Create Blog Post</h1>
+    <p>Write and publish a new post to the public blog.</p>
+</div>
 
-            <section class="panel-card">
-                @if(session('success'))
-                    <div class="alert">{{ session('success') }}</div>
-                @endif
-
-                <form id="blog-form" method="POST" action="{{ route('admin.blogs.store') }}" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="field-row">
-                        <label for="title">Title</label>
-                        <input id="title" name="title" type="text" value="{{ old('title', $blog->title) }}" required>
-                    </div>
-
-                    <div class="field-row">
-                        <label for="author">Author</label>
-                        <input id="author" name="author" type="text" value="{{ old('author', $blog->author) }}" required>
-                    </div>
-
-                    <div class="field-row">
-                        <label for="image">Featured Image</label>
-                        <input id="image" name="image" type="file" accept="image/*">
-                    </div>
-
-                    <div class="field-row">
-                        <label for="content">Content</label>
-                        <textarea id="content" name="content">{{ old('content', $blog->content) }}</textarea>
-                    </div>
-
-                </form>
-            </section>
+<div class="panel">
+    @if(session('success'))
+        <div class="alert">{{ session('success') }}</div>
+    @endif
+    @if($errors->any())
+        <div class="alert" style="background:#fff0f0;border-color:#feb2b2;color:#c53030;">
+            <ul style="margin:0;padding-left:18px;">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
         </div>
-    </div>
+    @endif
+
+    <form id="blog-form" method="POST" action="{{ route('admin.blogs.store') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="title">Title</label>
+                <input id="title" name="title" type="text" value="{{ old('title') }}" required>
+            </div>
+            <div class="form-field">
+                <label for="author">Author</label>
+                <input id="author" name="author" type="text" value="{{ old('author') }}" required>
+            </div>
+            <div class="form-field">
+                <label for="image">Featured Image</label>
+                <input id="image" name="image" type="file" accept="image/*">
+            </div>
+            <div class="form-field full-width">
+                <label for="content">Content</label>
+                <textarea id="content" name="content" rows="8">{{ old('content') }}</textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a href="{{ route('admin.blogs.index') }}" class="btn-secondary">Cancel</a>
+            <button type="submit" class="btn-primary">Publish Post</button>
+        </div>
+    </form>
 </div>
 
 @push('scripts')
@@ -182,9 +95,9 @@
         ],
         removePlugins: 'elementspath',
         resize_enabled: true,
-        bodyClass: 'editor-content',
         contentsCss: 'body { font-family: Inter, sans-serif; font-size: 14px; }'
     });
 </script>
 @endpush
+
 @endsection

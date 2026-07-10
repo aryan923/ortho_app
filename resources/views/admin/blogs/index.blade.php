@@ -1,166 +1,105 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Blog Management | OrthoCore Clinic')
 
 @push('styles')
 <style>
-    .admin-page { padding: 32px 0 70px; background: linear-gradient(180deg, #f6fbff 0%, #ffffff 100%); }
-    .admin-shell { display: grid; grid-template-columns: 260px 1fr; gap: 24px; align-items: start; }
-    .admin-shell > .admin-sidebar { align-self: stretch; min-height: 100%; }
-    .admin-sidebar {
-        background: #0f1f3a;
-        color: #fff;
-        border-radius: 24px;
-        padding: 20px;
-        min-height: 70vh;
-        height: 100%;
-        box-shadow: 0 16px 38px rgba(15, 31, 58, 0.12);
-    }
-    .sidebar-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding-bottom: 18px;
-        border-bottom: 1px solid rgba(255,255,255,0.12);
-        margin-bottom: 18px;
-    }
-    .brand-mark {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        display: grid;
-        place-items: center;
-        font-weight: 800;
-        background: linear-gradient(135deg, #1253c8, #4fd3cc);
-        color: white;
-    }
-    .brand-name {
-        font-size: 15px;
-        font-weight: 700;
-        margin: 0;
-    }
-    .brand-subtitle {
-        color: #9db2cf;
-        font-size: 12px;
-    }
-    .sidebar-nav {
-        display: grid;
-        gap: 8px;
-    }
-    .nav-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 11px 12px;
-        border-radius: 12px;
-        color: #dce8f7;
-        text-decoration: none;
-        font-size: 14px;
-        transition: background 0.2s, color 0.2s;
-    }
-    .nav-item:hover,
-    .nav-item.active {
-        background: rgba(255,255,255,0.12);
-        color: #fff;
-    }
-    .nav-dropdown {
-        display: grid;
-        gap: 6px;
-    }
-    .nav-toggle {
-        width: 100%;
-        justify-content: space-between;
-        border: 0;
-        background: transparent;
-        cursor: pointer;
-        font: inherit;
-        text-align: left;
-    }
-    .nav-caret {
-        margin-left: auto;
-        color: #8fd7d1;
-        font-size: 12px;
-    }
-    .nav-dropdown-menu {
-        display: none;
-        gap: 4px;
-        padding-left: 22px;
-        margin-top: 4px;
-    }
-    .nav-dropdown.open .nav-dropdown-menu {
-        display: grid;
-    }
-    .nav-dropdown.open .nav-caret {
-        transform: rotate(180deg);
-    }
-    .nav-subitem {
-        padding: 8px 10px;
-        border-radius: 10px;
-        color: #cfe0f3;
-        text-decoration: none;
-        font-size: 13px;
-    }
-    .nav-subitem:hover {
-        background: rgba(255,255,255,0.1);
-        color: #fff;
-    }
-    .admin-content { display: grid; gap: 20px; }
-    .admin-hero, .panel-card { background: #fff; border: 1px solid #dde8f7; border-radius: 24px; padding: 24px; box-shadow: 0 16px 38px rgba(15, 31, 58, 0.08); }
-    .admin-hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .admin-hero h1 { margin: 0; font-size: clamp(1.6rem, 2.2vw, 2.1rem); font-weight: 800; color: #0f1f3a; }
-    .admin-hero p { display: none; }
-    .blog-list { display: grid; gap: 16px; }
-    .blog-row { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; padding: 18px 20px; border: 1px solid #e9f2fb; border-radius: 18px; }
-    .blog-title { font-size: 1rem; font-weight: 700; margin: 0 0 6px; }
-    .blog-meta { font-size: 13px; color: #6a7f99; }
-    .blog-actions { display: flex; gap: 10px; }
-    .btn { border: 0; border-radius: 14px; padding: 10px 16px; font-weight: 700; cursor: pointer; }
-    .btn-primary { background: linear-gradient(135deg, #1253c8, #2877ff); color: #fff; }
-    .btn-secondary { background: #f8fafc; color: #0f172a; border: 1px solid #d9e6f7; }
-    .pagination { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
-    .page-link { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; border: 1px solid #d9e6f7; background: #fff; color: #0f172a; text-decoration: none; }
-    .page-link.active { background: #1253c8; color: #fff; border-color: #1253c8; }
+    .page-heading { margin-bottom: 24px; }
+    .page-heading h1 { font-size: 1.7rem; font-weight: 700; color: #1a2550; margin: 0 0 4px; }
+    .page-heading p  { font-size: 0.93rem; color: #6b7a99; margin: 0; }
+    .panel { background: #fff; border: 1px solid #e3e9f3; border-radius: 14px; padding: 20px; }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+    .panel-head h3 { font-size: 1rem; font-weight: 700; color: #1a2550; margin: 0 0 4px; }
+    .panel-head .panel-caption { font-size: 0.85rem; color: #6b7a99; margin: 0; }
+    .create-btn { display: inline-flex; align-items: center; gap: 6px; background: #4070f4; color: #fff; border: none; border-radius: 10px; padding: 9px 16px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .create-btn:hover { background: #2f5ce2; color: #fff; }
+    .btn-primary { background: #4070f4; color: #fff; border: none; border-radius: 10px; padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .btn-primary:hover { background: #2f5ce2; }
+    .btn-secondary { background: #f1f5fb; color: #4a5568; border: 1px solid #dce4f0; border-radius: 10px; padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn-secondary:hover { background: #e3e9f3; }
+    .form-field label { display: block; font-size: 0.85rem; font-weight: 600; color: #4a5568; margin-bottom: 6px; }
+    .form-field input, .form-field textarea, .form-field select { width: 100%; border: 1px solid #dce4f0; border-radius: 10px; padding: 10px 12px; font-size: 0.9rem; color: #1a2550; background: #fff; outline: none; }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: #4070f4; box-shadow: 0 0 0 3px rgba(64,112,244,0.12); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .form-field.full-width { grid-column: 1 / -1; }
+    .form-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+    .help-text { font-size: 0.8rem; color: #9aa5be; margin-top: 4px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; padding: 10px 14px; font-size: 0.8rem; font-weight: 600; color: #9aa5be; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #e3e9f3; background: #fafbff; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid #f1f5fb; font-size: 0.9rem; color: #3d4a6b; vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f8faff; }
+    .alert { background: #e8faf2; border: 1px solid #9ae6b4; color: #276749; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; font-size: 0.9rem; }
+    .img-thumb { width: 60px; height: 40px; object-fit: cover; border-radius: 6px; }
 </style>
 @endpush
 
+
 @section('content')
-<div class="admin-page">
-    <div class="wrap admin-shell">
-        @include('partials.admin-sidebar')
 
-        <div class="admin-content">
-            <section class="admin-hero">
-                <h1>Blog Management</h1>
-                <a href="{{ route('admin.blogs.create') }}" class="btn btn-primary">Create New Post</a>
-            </section>
-
-            <section class="panel-card">
-                <div class="blog-list">
-                    @forelse($blogs as $blog)
-                        <div class="blog-row">
-                            <div>
-                                <p class="blog-title">{{ $blog->title }}</p>
-                                <p class="blog-meta">{{ $blog->author }} · {{ $blog->created_at->format('M d, Y') }}</p>
-                            </div>
-                            <div class="blog-actions">
-                                <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn btn-secondary">Edit</a>
-                                <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-secondary">Delete</button>
-                                </form>
-                            </div>
-                        </div>
-                    @empty
-                        <p>No blog posts found.</p>
-                    @endforelse
-                </div>
-
-                <div class="pagination">
-                    {{ $blogs->links() }}
-                </div>
-            </section>
-        </div>
-    </div>
+<div class="page-heading">
+    <h1>Blog Management</h1>
+    <p>Create and manage blog posts published on the public site.</p>
 </div>
+
+<div class="panel">
+    <div class="panel-head">
+        <div>
+            <h3>All blog posts</h3>
+            <p class="panel-caption">Edit or delete existing posts, or create a new one.</p>
+        </div>
+        <a href="{{ route('admin.blogs.create') }}" class="create-btn">+ Create New Post</a>
+    </div>
+
+    @if(session('success'))
+        <div class="alert">{{ session('success') }}</div>
+    @endif
+
+    @if($blogs->count())
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($blogs as $blog)
+                <tr>
+                    <td>
+                        @if($blog->image)
+                            <img src="{{ asset($blog->image) }}" alt="{{ $blog->title }}" class="img-thumb">
+                        @else
+                            <span style="color:#9aa5be;font-size:0.85rem;">No image</span>
+                        @endif
+                    </td>
+                    <td style="font-weight:600;color:#1a2550;">{{ $blog->title }}</td>
+                    <td>{{ $blog->author }}</td>
+                    <td>{{ $blog->created_at->format('M d, Y') }}</td>
+                    <td>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <a href="{{ route('admin.blogs.edit', $blog) }}" class="btn-secondary" style="padding:6px 14px;font-size:0.85rem;border-radius:8px;text-decoration:none;">Edit</a>
+                            <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" style="margin:0;" onsubmit="return confirm('Delete this post?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="background:#fff0f0;color:#e53e3e;border:1px solid #feb2b2;border-radius:8px;padding:6px 14px;font-size:0.85rem;font-weight:600;cursor:pointer;">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid #f1f5fb;">
+            {{ $blogs->links() }}
+        </div>
+    @else
+        <p style="color:#9aa5be;padding:20px 0;">No blog posts found. Create your first post!</p>
+    @endif
+</div>
+
 @endsection
+

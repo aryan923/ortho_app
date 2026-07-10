@@ -1,13 +1,9 @@
-<aside class="admin-sidebar">
-    <div class="sidebar-brand">
-        <div class="brand-mark">OC</div>
-        <div>
-            <p class="brand-name">OrthoCore</p>
-            <span class="brand-subtitle">Admin Console</span>
-        </div>
-    </div>
+<div class="sidebar-logo">
+    <div class="logo-box">&#43;</div>
+    <span class="logo-text">OrthoCore</span>
+</div>
 
-    <nav class="sidebar-nav" aria-label="Admin sections">
+<nav class="sidebar-nav" aria-label="Admin sections">
         <a href="{{ route('dashboard') }}#overview" class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             <span>◉</span>
             Overview
@@ -16,7 +12,7 @@
         <div class="nav-dropdown {{ request()->routeIs('view-users') || request()->routeIs('roles') ? 'open' : '' }}">
             <button class="nav-item nav-toggle" type="button" aria-expanded="{{ request()->routeIs('view-users') || request()->routeIs('roles') ? 'true' : 'false' }}" aria-controls="admin-manage-menu">
                 <span>◉</span>
-                Manage Users
+                User & Role Management
                 <span class="nav-caret">▾</span>
             </button>
             <div class="nav-dropdown-menu" id="admin-manage-menu">
@@ -28,12 +24,13 @@
 
         <a href="{{ route('admin.settings') }}" class="nav-item {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
             <span>◉</span>
-            Settings
+            Site Settings
         </a>
+
         <div class="nav-dropdown {{ request()->routeIs('admin.cms.*') ? 'open' : '' }}">
             <button class="nav-item nav-toggle" type="button" aria-expanded="{{ request()->routeIs('admin.cms.*') ? 'true' : 'false' }}" aria-controls="admin-cms-menu">
                 <span>◉</span>
-                Page CMS
+                Content & Pages
                 <span class="nav-caret">▾</span>
             </button>
             <div class="nav-dropdown-menu" id="admin-cms-menu">
@@ -45,12 +42,26 @@
                 <a href="{{ route('admin.cms.edit', ['page' => 'book_appointment']) }}" class="nav-subitem {{ request()->routeIs('admin.cms.edit') && request()->route('page') === 'book_appointment' ? 'active' : '' }}">Book Appointment</a>
             </div>
         </div>
+
+        <a href="#appointments" class="nav-item">
+            <span>◉</span>
+            Appointments
+        </a>
+
+        <a href="#inventory" class="nav-item">
+            <span>◉</span>
+            Inventory
+        </a>
+
         <a href="{{ route('admin.blogs.index') }}" class="nav-item {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}">
             <span>◉</span>
             Blog Posts
         </a>
     </nav>
-</aside>
+
+    <a href="#" class="sidebar-help">
+        &#128737; Help &amp; Support
+    </a>
 
 @push('scripts')
 <script>

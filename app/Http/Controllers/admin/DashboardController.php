@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\Doctor;
 use App\Models\Permission;
 use App\Models\role;
@@ -12,9 +13,26 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
 
-public function dashboard(){
-    return view('admin.dashboard');
-    //
+public function dashboard()
+{
+    $userCount = User::count();
+    $doctorCount = Doctor::count();
+    $appointmentCount = Booking::count();
+    $roleCount = role::count();
+    $permissionCount = Permission::count();
+
+    $recentUsers = User::with('roles')->latest()->limit(4)->get();
+    $recentAppointments = Booking::with(['user', 'doctor.user'])->latest()->limit(4)->get();
+
+    return view('admin.dashboard', compact(
+        'userCount',
+        'doctorCount',
+        'appointmentCount',
+        'roleCount',
+        'permissionCount',
+        'recentUsers',
+        'recentAppointments'
+    ));
 }
 
 public function viewUsers(){
@@ -89,7 +107,35 @@ public function deleteUser($id)
     $user->delete();
 
     return response()->json(['message' => 'User deleted successfully']);
+}
 
+public function createUser(Request $request)
+{
+    $validated = $request->validate([
+        'name'          => 'required|string|max:255',
+        'email'         => 'required|string|email|max:255|unique:users',
+        'password'      => 'required|string|min:8|confirmed',
+        'Contact_Number'=> 'required|string|max:20|unique:users,Contact_Number',
+        'address'       => 'required|string|max:255',
+    ]);
+
+    $user = User::create([
+        'name'           => $validated['name'],
+        'email'          => $validated['email'],
+        'password'       => bcrypt($validated['password']),
+        'Contact_Number' => $validated['Contact_Number'],
+        'address'        => $validated['address'],
+    ]);
+
+    $userRole = role::where('name', 'user')->first();
+    if ($userRole) {
+        $user->roles()->attach($userRole->id);
+    }
+
+    return response()->json([
+        'message' => 'User created successfully.',
+        'user'    => $user->load('roles'),
+    ], 201);
 }
 
 public function searchUsers(Request $request)

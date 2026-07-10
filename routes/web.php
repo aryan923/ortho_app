@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EnquiryController;
+use App\Http\Controllers\RegisteredChart;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/users/{id}', [DashboardController::class, 'updateUser'])->name('users.update')->middleware('permission:editUsers');
     Route::get('/search-users', [DashboardController::class, 'searchUsers'])->name('userSearch')->middleware('permission:getUsers');
     Route::delete('/delete-user/{id}', [DashboardController::class, 'deleteUser'])->name('users.delete')->middleware('permission:deleteUsers');
+    Route::post('/admin/create-user', [DashboardController::class, 'createUser'])->name('admin.users.store')->middleware('permission:createUsers');
 
     // Admin Routes-Role Management
     Route::post('/create-role', [DashboardController::class, 'createRole'])->name('create-role')->middleware('permission:createRoles');
@@ -79,6 +81,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/blogs/{blog}/edit', [App\Http\Controllers\admin\BlogController::class, 'edit'])->name('admin.blogs.edit');
     Route::put('/admin/blogs/{blog}', [App\Http\Controllers\admin\BlogController::class, 'update'])->name('admin.blogs.update');
     Route::delete('/admin/blogs/{blog}', [App\Http\Controllers\admin\BlogController::class, 'destroy'])->name('admin.blogs.destroy');
+
+    Route::get('/graph-data', [RegisteredChart::class, 'getRegisteredChartData'])->name('graph.data');
 });
 
 Route::get('/blog', [App\Http\Controllers\HomeController::class, 'blog'])->name('blog');
@@ -92,6 +96,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/doctor/dashboard', [App\Http\Controllers\doctor\DashboardController::class, 'dashboard'])->name('doctor.dashboard');
     Route::get('/doctor/bookings', [App\Http\Controllers\doctor\DashboardController::class, 'getBookings'])->name('doctor.bookings');
+    Route::get('/doctor/profile', [App\Http\Controllers\doctor\DashboardController::class, 'editProfile'])->name('doctor.profile.edit');
+    Route::put('/doctor/profile', [App\Http\Controllers\doctor\DashboardController::class, 'updateProfile'])->name('doctor.profile.update');
 });
 
 Route::get('/doctor/schedule', [DoctorScheduleController::class, 'index'])->name('doctor.schedule');
