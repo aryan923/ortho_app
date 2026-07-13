@@ -25,7 +25,7 @@ class HomeController extends Controller
 
     public function BookAppointment()
     {
-        $doctors = Doctor::with('user')->get();
+        $doctors = Doctor::with('user')->paginate(4);
         return view('book-appointment', compact('doctors'));
     }
 

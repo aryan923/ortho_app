@@ -145,6 +145,7 @@
         }
         .topbar-profile .profile-name { font-weight: 600; font-size: 0.92rem; color: #1e2e7e; }
         .topbar-profile .profile-role { font-size: 0.8rem; color: #8896ad; }
+        .profile-dropdown button:hover { background: #fdf2f2 !important; }
         .page-content { padding: 28px; flex: 1; }
         @media (max-width: 680px) {
             .sidebar { display: none; }
@@ -168,13 +169,22 @@
                 &#128276;
                 <span class="badge"></span>
             </div>
-            <div class="topbar-profile">
+            <div class="topbar-profile" style="position: relative;" id="profileDropdownTrigger">
                 <div class="avatar">AU</div>
                 <div>
                     <div class="profile-name">System Admin</div>
                     <div class="profile-role">System Administrator</div>
                 </div>
                 <span style="color:#8896ad;font-size:11px;margin-left:4px;">&#9660;</span>
+                <div class="profile-dropdown" id="profileDropdown" style="display: none; position: absolute; top: 100%; right: 0; margin-top: 8px; background: #fff; border: 1px solid #e3e9f3; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); width: 160px; z-index: 1000; overflow: hidden;">
+                    <form action="{{ route('logout.submit') }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <button type="submit" style="display: flex; align-items: center; gap: 8px; width: 100%; padding: 12px 16px; border: none; background: transparent; cursor: pointer; text-align: left; font-family: inherit; font-size: 0.92rem; color: #e74c3c; font-weight: 500; transition: background 150ms ease;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </header>
@@ -183,6 +193,22 @@
     </main>
 </div>
 <script src="{{ asset('js/app.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const trigger = document.getElementById('profileDropdownTrigger');
+        const dropdown = document.getElementById('profileDropdown');
+        if (trigger && dropdown) {
+            trigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isOpen = dropdown.style.display === 'block';
+                dropdown.style.display = isOpen ? 'none' : 'block';
+            });
+            document.addEventListener('click', function () {
+                dropdown.style.display = 'none';
+            });
+        }
+    });
+</script>
 @stack('scripts')
 </body>
 </html>
