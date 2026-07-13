@@ -79,9 +79,9 @@
     .srv-card {
         background: var(--white); border: 1px solid var(--border);
         border-radius: var(--r-md); padding: 20px;
-        transition: transform .2s, box-shadow .2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .srv-card:hover { transform: translateY(-4px); box-shadow: var(--sh-md); }
+    .srv-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: var(--sh-md); border-color: rgba(18, 83, 200, 0.2); }
     .srv-icon {
         width: 44px; height: 44px; border-radius: 12px;
         display: grid; place-items: center;

@@ -91,105 +91,139 @@
     }
 
     .doctor-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 30px;
-        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        max-width: 900px;
+        margin: 20px auto 0;
     }
 
     .doctor-profile-card {
         background: var(--white);
         border: 1px solid var(--border);
-        border-radius: 24px;
+        border-radius: 18px;
         overflow: hidden;
-        box-shadow: var(--sh-sm);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        flex-direction: column;
-        position: relative;
+        box-shadow: 0 4px 12px rgba(18, 83, 200, 0.03);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .doctor-profile-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--sh-md);
-        border-color: rgba(18, 83, 200, 0.25);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(18, 83, 200, 0.08);
+        border-color: rgba(18, 83, 200, 0.2);
     }
 
-    .card-image-wrapper {
-        position: relative;
-        height: 240px;
-        overflow: hidden;
-        background: linear-gradient(135deg, #f5f8fe 0%, #eaf1fd 100%);
+    .doctor-card-body {
         display: flex;
         align-items: center;
-        justify-content: center;
+        padding: 22px 28px;
+        gap: 24px;
     }
 
-    .doctor-avatar-graphic {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--blue), var(--teal));
+    .doctor-avatar-wrapper {
+        flex-shrink: 0;
+    }
+
+    .doctor-avatar-circle {
+        width: 76px;
+        height: 76px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--blue) 0%, var(--teal) 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         color: #fff;
-        font-size: 2.2rem;
+        font-size: 1.6rem;
         font-weight: 800;
-        box-shadow: 0 10px 25px rgba(18, 83, 200, 0.2);
-        border: 4px solid #fff;
-        z-index: 2;
+        box-shadow: 0 6px 16px rgba(18, 83, 200, 0.12);
+        border: 3px solid #fff;
     }
 
-    .card-image-bg-pattern {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.06;
-        background-image: radial-gradient(circle at 1px 1px, var(--blue) 1px, transparent 0);
-        background-size: 16px 16px;
-    }
-
-    .doctor-meta-info {
-        padding: 28px;
+    .doctor-card-info {
         flex-grow: 1;
+        min-width: 0;
+        text-align: left;
+    }
+
+    .doctor-badge-row {
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
         align-items: center;
-        text-align: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+
+    .doctor-specialty-badge {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--blue);
+        background: var(--blue-lt);
+        padding: 4px 10px;
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    .doctor-status-badge {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--green);
+        background: var(--green-lt);
+        padding: 4px 10px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: var(--green);
+        display: inline-block;
     }
 
     .doctor-name {
-        font-size: 1.4rem;
-        font-weight: 800;
+        font-size: 1.3rem;
+        font-weight: 750;
         color: var(--ink);
         margin: 0 0 6px;
     }
 
-    .doctor-specialty {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--teal);
-        margin: 0 0 20px;
-        background: var(--teal-lt);
-        padding: 4px 14px;
-        border-radius: 100px;
-        display: inline-block;
+    .doctor-bio-snippet {
+        font-size: 13.5px;
+        color: var(--ink-lt);
+        line-height: 1.55;
+        margin: 0;
     }
 
-    .action-btn-wrapper {
-        width: 100%;
+    .doctor-card-action {
+        flex-shrink: 0;
     }
 
-    .action-btn-wrapper .btn {
-        width: 100%;
-        justify-content: center;
-        padding: 14px 24px;
-        border-radius: 16px;
-        font-size: 0.95rem;
+    .doctor-card-action .btn {
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .doctor-card-body {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+            gap: 16px;
+        }
+
+        .doctor-card-action {
+            width: 100%;
+        }
+
+        .doctor-card-action .btn {
+            width: 100%;
+        }
     }
 
     .empty-state-card {
@@ -307,20 +341,27 @@
         <div class="doctor-grid">
             @forelse($doctors as $doctor)
                 <article class="doctor-profile-card">
-                    <div class="card-image-wrapper">
-                        <div class="card-image-bg-pattern"></div>
-                        <div class="doctor-avatar-graphic">
-                            {{ strtoupper(substr(optional($doctor->user)->name ?? 'DR', 0, 2)) }}
+                    <div class="doctor-card-body">
+                        <div class="doctor-avatar-wrapper">
+                            <div class="doctor-avatar-circle">
+                                {{ strtoupper(substr(optional($doctor->user)->name ?? 'DR', 0, 2)) }}
+                            </div>
                         </div>
-                    </div>
-                    <div class="doctor-meta-info">
-                        <div>
+                        <div class="doctor-card-info">
+                            <div class="doctor-badge-row">
+                                <span class="doctor-specialty-badge">{{ $doctor->specialization ?? 'Orthopedic Specialist' }}</span>
+                                <span class="doctor-status-badge"><span class="status-dot"></span> Available</span>
+                            </div>
                             <h3 class="doctor-name">{{ optional($doctor->user)->name ?? 'Doctor' }}</h3>
-                            <span class="doctor-specialty">{{ $doctor->specialization ?? 'Orthopedic Specialist' }}</span>
+                            @if($doctor->biography)
+                                <p class="doctor-bio-snippet">{{ \Illuminate\Support\Str::limit($doctor->biography, 140) }}</p>
+                            @else
+                                <p class="doctor-bio-snippet">Board-certified specialist dedicated to patient recovery, personalized mobility plans, and leading orthopedic treatments.</p>
+                            @endif
                         </div>
-                        <div class="action-btn-wrapper">
+                        <div class="doctor-card-action">
                             <a href="{{ route('doctor.view.schedule', $doctor) }}" class="btn btn-solid">
-                                View Profile &amp; Book
+                                View Slots &amp; Book
                             </a>
                         </div>
                     </div>

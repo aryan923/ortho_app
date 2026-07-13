@@ -19,7 +19,6 @@
         <main class="page-content">
             @yield('content')
         </main>
-        @include('partials.footer')
     </div>
 
     <script src="{{ asset('js/app.js') }}"></script>

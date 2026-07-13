@@ -37,6 +37,7 @@
         gap: 12px;
         align-items: center;
         margin-top: 16px;
+        margin-bottom: 24px;
     }
 
     .meta-pill {
@@ -50,34 +51,25 @@
         font-size: 0.95rem;
     }
 
-    .hero-actions {
-        display: grid;
-        gap: 12px;
-        justify-content: end;
-    }
-
-    .hero-actions .btn,
-    .hero-actions summary {
-        min-width: 160px;
-    }
-
     .profile-menu {
         position: relative;
+        display: inline-block;
     }
 
     .profile-menu summary {
         list-style: none;
         display: inline-flex;
         align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: 12px 18px;
-        border-radius: 16px;
-        background: #fff;
-        color: #0f1f3a;
-        border: 1px solid rgba(15,31,58,0.12);
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.25);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.4);
         cursor: pointer;
         font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.2s;
     }
 
     .profile-menu summary::-webkit-details-marker {
@@ -85,20 +77,20 @@
     }
 
     .profile-menu[open] summary {
-        border-color: rgba(18,83,200,0.35);
-        box-shadow: 0 10px 20px rgba(18,83,200,0.12);
+        background: rgba(255,255,255,0.35);
+        border-color: rgba(255,255,255,0.6);
     }
 
     .profile-menu .dropdown-panel {
         position: absolute;
-        right: 0;
-        top: calc(100% + 10px);
-        min-width: 220px;
+        left: 0;
+        top: calc(100% + 8px);
+        min-width: 200px;
         background: #fff;
         border: 1px solid rgba(15,31,58,0.12);
         border-radius: 18px;
         box-shadow: 0 18px 40px rgba(15,31,58,0.12);
-        padding: 10px 0;
+        padding: 8px 0;
         z-index: 20;
     }
 
@@ -108,7 +100,7 @@
         align-items: center;
         width: 100%;
         justify-content: space-between;
-        padding: 12px 18px;
+        padding: 10px 18px;
         background: transparent;
         border: none;
         color: #0f1f3a;
@@ -156,7 +148,7 @@
     }
 
     .schedule-panel {
-        margin: 48px auto 0;
+        margin: 20px auto 0;
         background: #fff;
         border: 1px solid rgba(15,31,58,0.08);
         border-radius: 28px;
@@ -248,7 +240,8 @@
         font-weight: 700;
     }
 
-    .status-pill.confirmed { background: #dcfce7; color: #166534; }
+    .status-pill.confirmed,
+    .status-pill.completed { background: #dcfce7; color: #166534; }
     .status-pill.pending { background: #eff6ff; color: #1d4ed8; }
     .status-pill.cancelled { background: #fee2e2; color: #991b1b; }
 
@@ -279,11 +272,12 @@
     }
 
     .booking-modal {
-        width: min(760px, 100%);
+        width: min(540px, 100%);
         background: #fff;
-        border-radius: 28px;
+        border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 28px 70px rgba(15,31,58,0.18);
+        box-shadow: 0 24px 60px rgba(15,31,58,0.15);
+        border: 1px solid rgba(15,31,58,0.08);
     }
 
     .booking-modal header {
@@ -409,28 +403,24 @@
 
 @section('content')
 <section class="doctor-dashboard-hero" aria-label="Doctor dashboard hero">
-    <div class="wrap hero-grid">
+    <div class="wrap hero-grid" style="grid-template-columns: 1fr;">
         <div class="hero-copy">
-            <span class="eyebrow">Doctor dashboard</span>
-            <h1>Welcome back, {{ auth()->user()->name }}</h1>
-            <p>Monitor your patients, upcoming appointments, and clinical notes from a polished care workspace.</p>
+            <span class="eyebrow" style="opacity: 0.85;">Doctor Dashboard</span>
+            <h1 style="margin-bottom: 8px;">Welcome back, {{ auth()->user()->name }}</h1>
             <div class="hero-meta">
                 <span class="meta-pill">Specialty: {{ $doctor->specialization ?? 'General' }}</span>
                 <span class="meta-pill">Clinic: {{ $doctor->clinic_address ?? 'Not set' }}</span>
+                <details class="profile-menu">
+                    <summary>⚙ Profile</summary>
+                    <div class="dropdown-panel">
+                        <a href="{{ route('doctor.profile.edit') }}" class="dropdown-item">Edit Profile</a>
+                        <form method="POST" action="{{ route('logout.submit') }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item" style="color: var(--coral); font-weight: 700; border: none; background: transparent; width: 100%; text-align: left; padding: 10px 18px; cursor: pointer;">Logout</button>
+                        </form>
+                    </div>
+                </details>
             </div>
-        </div>
-        <div class="hero-actions">
-            <a href="{{ route('doctor.schedule') }}" class="btn btn-secondary">Schedule</a>
-            <details class="profile-menu">
-                <summary>Profile</summary>
-                <div class="dropdown-panel">
-                    <a href="{{ route('doctor.profile.edit') }}" class="dropdown-item">Edit profile</a>
-                    <form method="POST" action="{{ route('logout.submit') }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item">Logout</button>
-                    </form>
-                </div>
-            </details>
         </div>
     </div>
 </section>
@@ -450,7 +440,7 @@
     </article>
 </div>
 
-<section class="sec" aria-label="Doctor bookings">
+<section class="sec" aria-label="Doctor bookings" style="padding-top: 24px; padding-bottom: 48px;">
     <div class="wrap schedule-panel">
         <header>
             <div>
@@ -462,27 +452,33 @@
 
         @if($bookings->count())
             <div style="overflow-x:auto;">
-                <table class="booking-table" aria-label="Doctor bookings table">
+                <table class="booking-table" aria-label="Doctor bookings table" style="table-layout: fixed; width: 100%;">
                     <thead>
                         <tr>
-                            <th>Patient</th>
-                            <th>Appointment</th>
-                            <th>Status</th>
-                            <th>Symptoms</th>
+                            <th style="width: 20%; text-align: left;">Patient</th>
+                            <th style="width: 25%; text-align: left;">Email</th>
+                            <th style="width: 22%; text-align: left;">Appointment</th>
+                            <th style="width: 13%; text-align: left;">Status</th>
+                            <th style="width: 15%; text-align: left;">Symptoms</th>
+                            <th style="width: 5%;"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($bookings as $booking)
                             <tr class="booking-row" tabindex="0"
+                                data-booking-id="{{ $booking->id }}"
+                                data-booking-patient-id="{{ $booking->patient_id ?? ($booking->user_id ?? '') }}"
                                 data-booking-patient="{{ e(optional($booking->user)->name) }}"
                                 data-booking-email="{{ e(optional($booking->user)->email) }}"
                                 data-booking-time="{{ $booking->appointment_time?->format('M j, Y @ g:i A') }}"
                                 data-booking-status="{{ ucfirst($booking->status) }}"
                                 data-booking-symptoms="{{ e($booking->symptoms ?: 'No notes provided') }}">
-                                <td>{{ optional($booking->user)->name ?? 'Unknown Patient' }}<br><small>{{ optional($booking->user)->email ?? '' }}</small></td>
-                                <td>{{ $booking->appointment_time->format('D, M j, Y \a\t g:i A') }}</td>
-                                <td><span class="status-pill {{ Str::slug($booking->status) }}">{{ ucfirst($booking->status) }}</span></td>
-                                <td>{{ $booking->symptoms ?: 'No notes provided' }}</td>
+                                <td style="font-weight: 700; color: var(--ink); text-align: left; vertical-align: middle;">{{ optional($booking->user)->name ?? 'Unknown Patient' }}</td>
+                                <td style="color: var(--ink-lt); text-align: left; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ optional($booking->user)->email ?? '-' }}</td>
+                                <td style="text-align: left; vertical-align: middle;">{{ $booking->appointment_time->format('D, M j, Y \a\t g:i A') }}</td>
+                                <td style="text-align: left; vertical-align: middle;"><span class="status-pill {{ Str::slug($booking->status) }}">{{ ucfirst($booking->status) }}</span></td>
+                                <td style="max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; vertical-align: middle; color: var(--ink-lt);">{{ $booking->symptoms ?: 'No notes provided' }}</td>
+                                <td style="text-align: right; vertical-align: middle; padding-right: 14px;"></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -530,21 +526,40 @@
                 </dl>
             </section>
             <section class="booking-section" data-tab-panel="history">
-                <p>Previous visits are not available in this preview, but this area can display past encounters, notes, and diagnoses.</p>
+                <div id="history-loading" style="padding: 16px; text-align: center; color: var(--ink-lt);">Loading history...</div>
+                <div id="history-content" style="display: none; max-height: 380px; overflow-y: auto; padding-right: 4px;">
+                    <div id="history-bookings-list" style="margin-bottom: 24px;">
+                        <h4 style="font-size: 13.5px; font-weight: 700; color: var(--blue); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">Appointment History</h4>
+                        <div class="history-list-items" style="display: grid; gap: 10px;"></div>
+                    </div>
+                    <div>
+                        <h4 style="font-size: 13.5px; font-weight: 700; color: var(--blue); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">Prescriptions &amp; Diagnoses</h4>
+                        <div class="prescription-list-items" style="display: grid; gap: 10px;"></div>
+                    </div>
+                </div>
             </section>
             <section class="booking-section" data-tab-panel="prescription">
-                <div class="form-field">
-                    <label for="medication-name">Diagnosis</label>
-                    <input id="medication-name" type="text" placeholder="e.g., Viral pharyngitis" disabled>
-                </div>
-                <div class="form-field">
-                    <label for="medication-details">Medicines (Rx)</label>
-                    <textarea id="medication-details" placeholder="e.g., Amoxicillin 500mg" disabled></textarea>
-                </div>
-                <div class="form-field">
-                    <label for="medication-instructions">Instructions</label>
-                    <textarea id="medication-instructions" placeholder="Take 1 tablet twice a day after meals" disabled></textarea>
-                </div>
+                <form id="prescription-form" novalidate>
+                    @csrf
+                    <input type="hidden" id="prescription-patient-id" name="patient_id">
+                    <input type="hidden" id="prescription-booking-id" name="appointment_id">
+                    <div class="form-field">
+                        <label for="medication-name">Diagnosis</label>
+                        <input id="medication-name" name="diagnosis" type="text" placeholder="e.g., Left knee osteoarthritis" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="medication-details">Medicines (Rx)</label>
+                        <textarea id="medication-details" name="prescription" placeholder="e.g., Celecoxib 200mg once daily after meal for 14 days" required style="height: 80px; min-height: 80px;"></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label for="medication-instructions">Notes / Special Instructions</label>
+                        <textarea id="medication-instructions" name="notes" placeholder="e.g., Avoid heavy lifting, apply cold pack daily" style="height: 80px; min-height: 80px;"></textarea>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                        <span id="prescription-status-message" style="align-self: center; font-size: 13px; font-weight: 600;"></span>
+                        <button type="submit" class="btn btn-solid btn-sm" style="padding: 10px 22px; font-weight: 700;">Save Prescription</button>
+                    </div>
+                </form>
             </section>
         </div>
     </div>
@@ -567,14 +582,106 @@
             symptoms: document.getElementById('modal-appointment-symptoms'),
         };
 
+        let activePatientId = null;
+        let activeBookingId = null;
+
         function openModal(row) {
+            activePatientId = row.dataset.bookingPatientId;
+            activeBookingId = row.dataset.bookingId;
+
+            document.getElementById('prescription-patient-id').value = activePatientId;
+            document.getElementById('prescription-booking-id').value = activeBookingId;
+            document.getElementById('prescription-form').reset();
+            document.getElementById('prescription-status-message').textContent = '';
+
             fields.patient.textContent = row.dataset.bookingPatient || 'Unknown';
             fields.email.textContent = row.dataset.bookingEmail || '-';
             fields.time.textContent = row.dataset.bookingTime || '-';
             fields.status.textContent = row.dataset.bookingStatus || '-';
             fields.symptoms.textContent = row.dataset.bookingSymptoms || 'No notes provided';
+
+            // Reset tabs to overview
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            document.querySelector('[data-tab="overview"]').classList.add('active');
+            document.querySelector('[data-tab-panel="overview"]').classList.add('active');
+
             modal.classList.add('active');
             modal.setAttribute('aria-hidden', 'false');
+
+            loadPatientHistory(activePatientId);
+        }
+
+        function loadPatientHistory(patientId) {
+            const loadingEl = document.getElementById('history-loading');
+            const contentEl = document.getElementById('history-content');
+            const bookingsList = document.querySelector('.history-list-items');
+            const prescriptionsList = document.querySelector('.prescription-list-items');
+
+            loadingEl.style.display = 'block';
+            contentEl.style.display = 'none';
+            bookingsList.innerHTML = '';
+            prescriptionsList.innerHTML = '';
+
+            fetch(`/patients/${patientId}/history`)
+                .then(response => response.json())
+                .then(data => {
+                    loadingEl.style.display = 'none';
+                    contentEl.style.display = 'block';
+
+                    // Render bookings
+                    if (data.bookings && data.bookings.length > 0) {
+                        data.bookings.forEach(b => {
+                            const dateStr = new Date(b.appointment_time).toLocaleDateString(undefined, {
+                                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                            });
+                            const div = document.createElement('div');
+                            div.style.padding = '10px 14px';
+                            div.style.background = '#f8fafc';
+                            div.style.borderRadius = '10px';
+                            div.style.border = '1px solid rgba(15,31,58,0.06)';
+                            div.innerHTML = `
+                                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13px; color:#0f1f3a;">
+                                    <span>${dateStr}</span>
+                                    <span style="font-size:11px; text-transform:uppercase;" class="status-pill ${b.status}">${b.status}</span>
+                                </div>
+                                <div style="font-size:12.5px; color:#64748b; margin-top:4px;">Symptoms: ${b.symptoms || 'None recorded'}</div>
+                            `;
+                            bookingsList.appendChild(div);
+                        });
+                    } else {
+                        bookingsList.innerHTML = '<p style="font-size:13px; color:#64748b; font-style:italic;">No past appointments found.</p>';
+                    }
+
+                    // Render prescriptions
+                    if (data.prescriptions && data.prescriptions.length > 0) {
+                        data.prescriptions.forEach(p => {
+                            const dateStr = new Date(p.created_at).toLocaleDateString(undefined, {
+                                year: 'numeric', month: 'short', day: 'numeric'
+                            });
+                            const div = document.createElement('div');
+                            div.style.padding = '12px 14px';
+                            div.style.background = '#f0fdf4';
+                            div.style.borderRadius = '10px';
+                            div.style.border = '1px solid rgba(22,163,74,0.1)';
+                            div.innerHTML = `
+                                <div style="font-weight:700; font-size:13px; color:#166534; display:flex; justify-content:space-between;">
+                                    <span>Diagnosis: ${p.diagnosis}</span>
+                                    <span style="font-weight:600; color:#5f6f85; font-size:11px;">${dateStr}</span>
+                                </div>
+                                <div style="font-size:12.5px; color:#1b4332; margin-top:4px; font-weight:600;">Rx: ${p.prescription}</div>
+                                ${p.notes ? `<div style="font-size:11.5px; color:#5f6f85; margin-top:4px; font-style:italic;">Notes: ${p.notes}</div>` : ''}
+                            `;
+                            prescriptionsList.appendChild(div);
+                        });
+                    } else {
+                        prescriptionsList.innerHTML = '<p style="font-size:13px; color:#64748b; font-style:italic;">No prescriptions found.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching history:', error);
+                    loadingEl.textContent = 'Failed to load patient history.';
+                });
         }
 
         function closeModal() {
@@ -604,6 +711,61 @@
                 panels.forEach(p => p.classList.remove('active'));
                 tab.classList.add('active');
                 document.querySelector(`[data-tab-panel="${tab.dataset.tab}"]`).classList.add('active');
+            });
+        });
+
+        // Close profile menu dropdown when clicking outside
+        const profileMenu = document.querySelector('.profile-menu');
+        if (profileMenu) {
+            document.addEventListener('click', function (event) {
+                if (!profileMenu.contains(event.target)) {
+                    profileMenu.removeAttribute('open');
+                }
+            });
+        }
+
+        // Prescription Form Submit Handler
+        const prescriptionForm = document.getElementById('prescription-form');
+        prescriptionForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const statusMsg = document.getElementById('prescription-status-message');
+            statusMsg.textContent = 'Saving...';
+            statusMsg.style.color = 'var(--ink-lt)';
+
+            const formData = new FormData(prescriptionForm);
+            
+            fetch('/prescriptions', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    statusMsg.textContent = '✓ Saved successfully';
+                    statusMsg.style.color = 'var(--green)';
+                    prescriptionForm.reset();
+                    
+                    // Reload patient history tab to include new prescription
+                    loadPatientHistory(activePatientId);
+
+                    // Reload page to reflect updated booking status in the dashboard queue
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    statusMsg.textContent = 'Error: ' + (data.message || 'Could not save');
+                    statusMsg.style.color = 'var(--coral)';
+                }
+            })
+            .catch(error => {
+                console.error('Error saving prescription:', error);
+                statusMsg.textContent = 'Failed to connect to server.';
+                statusMsg.style.color = 'var(--coral)';
             });
         });
     });

@@ -2,7 +2,7 @@
 <header class="navbar">
     <div class="wrap">
         <a href="/" class="brand">
-            @if(config('site.logo'))
+            @if(config('site.logo') && file_exists(public_path(config('site.logo'))))
                 <img src="{{ asset(config('site.logo')) }}" alt="{{ config('site.full_name') }}" class="brand-logo">
             @else
                 <span class="brand-icon">+</span>
@@ -40,20 +40,29 @@
             @endguest
 
             @auth
-                <div class="profile-menu">
-                    <button type="button" class="profile-pill" aria-haspopup="true" aria-expanded="false">
+                <div class="profile-menu" data-open="false">
+                    <button type="button" class="profile-pill" data-profile-toggle aria-haspopup="true" aria-expanded="false">
+                        <span class="avatar-circle">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                         <span>{{ \Illuminate\Support\Str::limit(auth()->user()->name, 18) }}</span>
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" style="margin-left: 2px;">
                             <path d="M12 15.5l-5-5h10l-5 5z"/>
                         </svg>
                     </button>
-                    <div class="profile-dropdown" aria-label="Profile menu">
-                        <a href="{{ route('doctor.dashboard') }}">Dashboard</a>
-                        <a href="{{ route('doctor.schedule') }}">Schedule</a>
-                        <a href="{{ route('doctor.profile.edit') }}">Profile</a>
+                    <div class="profile-dropdown" data-profile-dropdown aria-label="Profile menu">
+                        @if(auth()->user()->hasRole('admin'))
+                            <a href="{{ route('dashboard') }}">Admin Dashboard</a>
+                            <a href="{{ route('admin.settings') }}">Settings</a>
+                        @elseif(auth()->user()->hasRole('doctor'))
+                            <a href="{{ route('doctor.dashboard') }}">Doctor Dashboard</a>
+                        @else
+                            <div class="dropdown-header" style="padding: 10px 18px 6px; font-size: 12px; font-weight: 700; color: var(--ink-lt); border-bottom: 1px solid var(--border); margin-bottom: 6px;">
+                                Patient Account
+                            </div>
+                            <a href="{{ route('user.profile') }}">My Profile</a>
+                        @endif
                         <form method="POST" action="{{ route('logout.submit') }}">
                             @csrf
-                            <button type="submit">Logout</button>
+                            <button type="submit" style="color: var(--coral); font-weight: 700;">Logout</button>
                         </form>
                     </div>
                 </div>
@@ -80,7 +89,37 @@
         position: relative;
     }
 
-    .profile-pill,
+    .profile-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px 5px 6px;
+        border: 1px solid rgba(15, 31, 58, 0.08);
+        border-radius: 999px;
+        background: rgba(246, 249, 255, 0.7);
+        backdrop-filter: blur(10px);
+        color: var(--ink);
+        font-size: 13.5px;
+        font-weight: 700;
+        line-height: 1;
+        box-shadow: 0 4px 12px rgba(15, 31, 58, 0.03);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .avatar-circle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1253c8, #1f8d74);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
     .auth-pill {
         display: inline-flex;
         align-items: center;
@@ -98,7 +137,13 @@
         cursor: pointer;
     }
 
-    .profile-pill:hover,
+    .profile-pill:hover {
+        transform: translateY(-1.5px);
+        background: #fff;
+        border-color: rgba(18, 83, 200, 0.25);
+        box-shadow: 0 10px 24px rgba(18, 83, 200, 0.08);
+    }
+
     .auth-pill:hover {
         transform: translateY(-1px);
         border-color: var(--blue);
@@ -107,8 +152,8 @@
     }
 
     .profile-pill svg {
-        width: 12px;
-        height: 12px;
+        width: 10px;
+        height: 10px;
         fill: currentColor;
     }
 

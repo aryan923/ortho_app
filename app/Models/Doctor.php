@@ -27,4 +27,9 @@ protected $fillable = [
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class, 'doctor_id');
+    }
 }

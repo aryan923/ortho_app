@@ -88,9 +88,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/blog', [App\Http\Controllers\HomeController::class, 'blog'])->name('blog');
 Route::get('/blog/{blog}', [App\Http\Controllers\HomeController::class, 'showBlog'])->name('blog.show');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/doctors/{doctor}/bookings', [BookingController::class, 'create'])->name('doctor.bookings.store');
     Route::get('/doctors/{doctor}/booked-slots', [BookingController::class, 'getBookedSlots'])->name('doctor.booked-slots');
+    Route::get('/profile', [App\Http\Controllers\user\UserProfile::class, 'viewprofile'])->name('user.profile');
+    Route::post('/profile', [App\Http\Controllers\user\UserProfile::class, 'updateprofile'])->name('user.profile.update');
 });
 
 Route::middleware(['auth', 'role:doctor'])->group(function () {
@@ -98,6 +100,11 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
     Route::get('/doctor/bookings', [App\Http\Controllers\doctor\DashboardController::class, 'getBookings'])->name('doctor.bookings');
     Route::get('/doctor/profile', [App\Http\Controllers\doctor\DashboardController::class, 'editProfile'])->name('doctor.profile.edit');
     Route::put('/doctor/profile', [App\Http\Controllers\doctor\DashboardController::class, 'updateProfile'])->name('doctor.profile.update');
+    
+    // Patient History & Prescription APIs
+    Route::get('/patients/{patient}/history', [App\Http\Controllers\Prescription::class, 'patientHistory'])->name('doctor.patient.history');
+    Route::get('/patients/{patient}/prescriptions', [App\Http\Controllers\Prescription::class, 'getPrescriptions'])->name('doctor.patient.prescriptions');
+    Route::post('/prescriptions', [App\Http\Controllers\Prescription::class, 'store'])->name('doctor.prescriptions.store');
 });
 
 Route::get('/doctor/schedule', [DoctorScheduleController::class, 'index'])->name('doctor.schedule');

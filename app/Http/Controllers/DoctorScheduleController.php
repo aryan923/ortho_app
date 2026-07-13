@@ -20,4 +20,6 @@ class DoctorScheduleController extends Controller
 
         return view('doctor.schedule', compact('doctors', 'doctor'));
     }
+
+    
 }

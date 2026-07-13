@@ -31,7 +31,8 @@ class HomeController extends Controller
 
     public function doctors()
     {
-        return view('doctors');
+        $doctors = Doctor::with('user')->paginate(6);
+        return view('doctors', compact('doctors'));
     }
 
     public function blog()
